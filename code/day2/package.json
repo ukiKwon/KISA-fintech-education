@@ -9,6 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.17.0",
+    "mysql": "github:mysqljs/mysql",
     "request": "^2.88.0",
     "xmljson": "^0.2.0"
   }

@@ -26,17 +26,50 @@
     (3.3) 금융 API 실습
       - 그냥 바로 사용할 수는 없고, 쿼리 스트링에 내 고유키 값을 넘겨줘야함.  
 
-  (4) DBMS
-    `CREATE TABLE user ( uid int AUTO_INCREMENT, uname varchar(255) NOT NULL, ubirthday DATETIME, upwd varchar(255) NOT NULL, uphone varchar(255), PRIMARY KEY(uid));
-    `
+  (4) DBMS : DB 세팅  
+    `CREATE TABLE user ( uid int AUTO_INCREMENT, uname varchar(255) NOT NULL, ubirthday DATETIME, upwd varchar(255) NOT NULL, uphone varchar(255), PRIMARY KEY(uid));`  
 
-  (5) 별도  
+  (5) MYSQL - nodejs
+    - npm에 mysql 커넥터가 있는지 확인을 하고,    
+      `npm install mysql`
+
+  (6) server 'Express' : NPM 모듈
+    - Express 기능 사용  
+
+  (7) EJS 설치 : NPM 모듈
+    - 파일을 HTML로 전환시키는 모듈
+    - 'views' 폴더를 생성해서 여기다가 관리할 것  
+
+  (8)
+  (7) 별도  
     - 요즘은 XML 잘 안 쓰는 추세  
 
 # 에러
   (1) console.log : 객체 내 변수 호출 안됨.  -> this 사용하는 것 기존과 동일함.  
+  (2) mysql - npm 에러
+    `/home/uki408/Documents/git/KISA_fintechSchool/code/day2/mysqltest.js:12
+  if (error) throw error;
+             ^
 
+Error: getaddrinfo ENOTFOUND localhost localhost:3306
+    at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
+    --------------------
+    at Protocol._enqueue (/home/uki408/Documents/git/KISA_fintechSchool/code/day2/node_modules/mysql/lib/protocol/Protocol.js:144:48)
+    at Protocol.handshake (/home/uki408/Documents/git/KISA_fintechSchool/code/day2/node_modules/mysql/lib/protocol/Protocol.js:51:23)
+    at Connection.connect (/home/uki408/Documents/git/KISA_fintechSchool/code/day2/node_modules/mysql/lib/Connection.js:119:18)
+    at Object.<anonymous> (/home/uki408/Documents/git/KISA_fintechSchool/code/day2/mysqltest.js:9:12)
+    at Module._compile (internal/modules/cjs/loader.js:701:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:712:10)
+    at Module.load (internal/modules/cjs/loader.js:600:32)
+    at tryModuleLoad (internal/modules/cjs/loader.js:539:12)
+    at Function.Module._load (internal/modules/cjs/loader.js:531:3)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:754:12)`
 
+    -> host : 'localhost' -> '127.0.0.1' 로 변경하면 됨.  
+    - ref( https://stackoverflow.com/questions/25521755/errorerror-getaddrinfo-enotfound-mysql)
+
+  (3) EJS와 Views 이해 잘 안됨  
+  
 # 2019. 05. 20
 # 첫날
 # 과정
@@ -52,5 +85,5 @@
 # 에러    
  (1) 오픈뱅킹플랫폼 가입 과정 (x) : 회원 가입시 보안 모듈 설치 불가라는 에러 접함  
   - (시도1) 핸드폰으로 가입시도 했으나 마찬가지 에러 메시지  
-  - (시도2) 윈도우 플랫폼으로 해볼것  
- (2) slack 방 가입  
+  - (시도2) 윈도우 플랫폼으로 해볼것  -> 불분명하게 들어가지기는 함.
+ (2) slack 방 가입 -> 주소창에 바로 쳐서 들어가는 거임.
