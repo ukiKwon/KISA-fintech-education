@@ -5,9 +5,33 @@
   (1) nodejs 기본문법  
 # 일지  
   (1) console.log, 변수, 함수, 객체 생성, 배열, 반복문(for, while),if/else
-      - 배열은 여러 타입 동시에 사용 가능하지만 -> 런타임 에러에 취약해짐  
-      - 반복문 내 임시 변수 i에 대한 별도의 타입 선언 필요없음;  
-        for(i = 0; i < 3; ++i) or for(var i = 0; i < 3; ++i);
+    - 배열은 여러 타입 동시에 사용 가능하지만 -> 런타임 에러에 취약해짐  
+    - 반복문 내 임시 변수 i에 대한 별도의 타입 선언 필요없음;  
+      for(i = 0; i < 3; ++i) or for(var i = 0; i < 3; ++i);  
+  (2) 동기식/비동기식  
+    - 일의 순서가 중요할 때는 동기식, 그렇지 않을 때는 비동기식으로 일 처리 맡겨 버려도 됨; 파일 Read/Write 작업과 같은 경우는 속도차가 나서 문제남  
+    - callback 함수로 해결하겠다.  
+    *callback hell 문제*  
+
+  (3) NPM
+    (3.1) 'npm init'으로 초기화
+      ->  'npm install request' 모듈 사용
+    - npm에서 쓸 꺼 하나 가져오면 된다.
+    - 우리가 이제 request를 날리는 도구(모듈)을 가져왔으니간 API로 보내보자
+    - 그런데 이런식이라면 filestream 상으로 매우 괴로워짐
+
+    (3.2) 'xml <-> json'으로 바꾸는 모듈 받아올거임
+      - xml로 주는 사이트에 가서 요청을 해야함.
+      *금융API 할때도 이걸로 하는거임*  
+    (3.3) 금융 API 실습
+      - 그냥 바로 사용할 수는 없고, 쿼리 스트링에 내 고유키 값을 넘겨줘야함.  
+
+  (4) DBMS
+    `CREATE TABLE user ( uid int AUTO_INCREMENT, uname varchar(255) NOT NULL, ubirthday DATETIME, upwd varchar(255) NOT NULL, uphone varchar(255), PRIMARY KEY(uid));
+    `
+
+  (5) 별도  
+    - 요즘은 XML 잘 안 쓰는 추세  
 
 # 에러
   (1) console.log : 객체 내 변수 호출 안됨.  -> this 사용하는 것 기존과 동일함.  

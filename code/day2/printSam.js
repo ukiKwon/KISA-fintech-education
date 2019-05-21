@@ -99,3 +99,37 @@
 
 
 //8단계 :
+// var car = ['Kwon', 'Sung', 'Uk'];
+//   for (var i = 0; i < 3; ++i)
+//     if (car[i] == "Kwon")
+//       console.log(car[i]);
+
+
+//9단계 : 비동기/동기
+// console.log('--------------------- TEST01 START -------------------');
+// var fs = require('fs');
+// console.log('첫번째 기능입니다.');
+// fs.readFile('./test.txt', 'utf8', function(err, result) {
+//     if (err) {
+//         console.err(err);
+//         throw err;
+//     }
+//     else {
+//         console.log('>> TEST01 출력 파일입니다.');
+//         console.error("두번째 기능인데 파일을 읽어오느라 시간이...조금ㅋㅋㅋㅋ");
+//         console.log(result);
+//     }
+// });
+// console.log('마지막 기능입니다');
+// console.log('--------------------- TEST01 E N D -------------------\n\n');
+// //
+// console.log('--------------------- TEST02 START -------------------');
+// var fs = require('fs');
+// console.log('A');
+// var result = fs.readFileSync('./test.txt', 'utf8');
+// console.log('>> TEST02 출력 파일입니다.');
+// console.log(result);
+// console.log('C');
+// console.log('--------------------- TEST02 E N D -------------------\n\n');
+
+//10단계 : 콜백함수
