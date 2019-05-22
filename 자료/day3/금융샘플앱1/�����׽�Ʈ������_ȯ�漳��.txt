@@ -1,0 +1,68 @@
+
+※ 톰캣환경설정
+	
+	* 환경변수 설정
+		- tomcat_start.bat 파일을 에디터로 열어서 현재 자신의 환경에 맞게 환경변수를 설정합니다. 
+	
+		(1) CATALINA_HOME
+			- 예) set CATALINA_HOME="C:\DEV\workspace\kftc-bfop-local-test\tomcat" 을 
+				   set CATALINA_HOME="D:\kftcApiLocalTest_20170419150018\tomcat" 과 같이 변경 후 저장 (로컬테스트페이지 압축파일 해제 경로 하위의 'tomcat' 폴더로 지정)
+	
+		(2) JRE_HOME
+			- 예) JRE_HOME="C:\Program Files\Java\jre8" 과 같이 변경 후 저장 (현재 사용자의 java 설치경로 하위의 jre 폴더로 지정)
+
+
+	* 톰캣 실행 방법
+		- tomcat_start.bat 를 수행합니다.
+		- 기본 포트는 8880 입니다. (server.xml 에서 수정 가능)
+		
+		
+	* 톰캣 종료 방법
+		- Tomcat 창을 닫아 종료합니다.
+		
+		
+	* 톰캣을 사용하는 이유
+		- 특정 업무에서(ex: 사용자로그인연결) authorization code를 발급받고, "편의상" 호출 페이지의 UI에 바인딩 해 줄 때, 
+		   로컬 파일(html)을 file protocol로 직접 호출할 수 없기 때문에 http protocol로 호출할 수 있도록 웹서버 용도로 사용함.
+
+
+
+※ chrome 환경설정
+
+	- 로컬테스트페이지는 google chrome의 사용을 강력히 권장합니다. 그 이유는 cross domain ajax 호출 과정에서 브라우저가 응답 제한을 걸게 되는데,
+	  chrome은 이를 회피할 수 있는 옵션을 제공하기 때문입니다. 이 회피 옵션을 사용하지 않을 경우, 로컬테스트 페이지의 일부 메뉴 혹은 
+	  Gateway에서 리턴하는 오류에 대한 메시지 안내 등의 기능이 정상 동작하지 않습니다.
+	  
+	- chrome의 cross domain ajax 제한 해제 방법 (로컬 환경의 테스트용) --> CORS(Cross-Origin Resource Sharing) 허용
+
+		<크롬 확장 프로그램으로 제어>
+		(1) 메뉴 > 도구 > 확장 프로그램
+		(2) "더 많은 확장 프로그램 다운로드" 클릭
+		(3) "CORS"로 검색
+		(4) "Moesif Origin & CORS Changer" 설치
+		(5) 설치 완료 후에 상단바의 빨간색 "CORS" 버튼 활성화("on")
+		* 크롬 최신버전의 경우에 동작하지 않는 경우가 있으며, 이 경우에 아래의 옵션으로 설정
+
+		<크롬 옵션으로 제어>
+		(1) 기존 설치된 chrome의 바로가기를 복사/붙여넣기 하여 바로가기 사본 생성
+		(2) (1)에서 복제/생성한 바로가기 우클릭 > 속성 > 대상 항목의 chrome.exe" 뒷 부분에 옵션 추가 후 확인 클릭
+			(2-1) --disable-web-security 옵션 추가
+			(2-2) --user-data-dir="[Chrome사용자데이터폴더]" 옵션 추가 (최근 버전의 Chrome의 경우, (2-1)만으로는 해결되지 않음)
+			(적용 예) "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --user-data-dir="C:\Users\[사용자명]\AppData\Local\Google\Chrome\User Data\Default"
+			           (Window7 32bit, Chrome 59버전 기준 설정)
+			* --user-data-dir에 설정되는 경로는 크롬 default 사용자 폴더를 권장합니다.
+			  (지정된 경로에 사용자 정보가 저장되며, 폴더가 없는 경우에는 생성하여 저장됩니다.)
+	  	(3) 현재 모든 chrome 인스턴스 종료
+	  	(4) 옵션을 추가한 바로가기로 chrome 실행
+	  	(5) chrome 실행시 화면 상단에 '지원되지 않는 명령줄 플래그(--disable-web-security)를 사용 중이므로..."라는 노란색 문구가 표시되면 정상적으로 적용된 것입니다.
+
+	- 주의* 
+		--disable-web-security 옵션은 브라우저의 보안 제한사항을 완화하는 옵션이므로, 로컬 테스트 용도 외에 타 사이트에서는 사용하지 마십시오.
+	   	이로 인해 발생하는 문제는 책임지지 않습니다.
+
+
+	
+* 로컬테스트페이지 메인 URL
+	http://localhost:8880/html/index.html
+
+

@@ -1,0 +1,6 @@
+
+AppName: 오픈플랫폼 API 로컬테스트 페이지
+
+FileName: kftc-bfop-local-test.zip
+
+PackagingDateTime: 201808021047

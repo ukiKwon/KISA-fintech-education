@@ -1,5 +1,48 @@
 # KISA_fintechSchool  
-#2019. 05. 21
+# 2019. 05. 22
+# 과정
+# 일지
+  (1) 환경설정 스스로 해보기 : npm 환경설정, express 세팅  
+    - 프로젝트를 하나 만들때마따 'npm init'을 하고 사용할 모듈들을 불러와야함. 혹은 복붙하거나  
+    - '/public'은 내가 외부로 공개한 유일한 폴더  
+    - '/join' 추가  
+
+  (2) 소비 패턴 - 결제에 대하여 금결원으로 넘겨주기
+    - 인증 페이지 만들기가 먼저(인증 부분이 첫단계) -> 금결원과 연동
+  (3) Vue.js를 언급 : 이게 대세. ejs랑 양립함.
+  (4) ajax : 비동기적으로 부분적으로 데이터를 렌더링을 하기 위하여 사용함.  
+    - jquery로 데이터 바인딩 하기 힘들다 해서 나온게 Vue.js, angularjs  
+  (5) mysql 코드 적용
+    - join 에서 post 기능 추가
+    - SQL 코드 추가
+      `'INSERT INTO user(uname, upwd,uphone) VALUES (?, ?, ?)'`  
+  (6) 프론트에서 서버로 날리는 이벤트 추가
+    - join에서 처리 구문 추가  
+  (7) 별개  
+    - mysql 늘 연결된 상태로 구현하는 것이 아니라 polling 기법으로 구현함.
+
+  (8) 금융결제원
+    - CallbackURl : 인증 후에 받을 데이터들이 올 곳을 정하는 곳  
+    - Chrome ors 확장 프로그램 추가 설치  
+    - [ Outh 조회 ] - 프론트에 인증 추가하기  
+
+# 에러  
+  (1) 'ajaxTest' 사용이 안 됨
+  (2) 금융API 300004 에러 -> 금융 결제원 앱에 등록해놓은 callback url에 프로토콜 명까지 기입하기   
+  (3) XHR 에러
+  `XHR failed loading: GET "https://testapi.open-platform.or.kr/oauth/2.0/authorize2?response_type=code&client_id=44c0930fc871461287088ca73882af67&redirect_uri=http://localhost:3000/authResult&scope=login%20inquiry%20transfer&auth_type=0&invoke_type=ajax".`  
+
+  - `<button type="button" id="authBtn" class="button button-full button-m shadow-large button-round-small bg-highlight top-30 bottom-0">AUTHENTICATION</button>`
+  - 위 구문에서 class 부분에 'back-button'이 속성때문에 동작이 안 되었음.  
+  (4) JSON 타입 에러
+  `VM122:1 Uncaught SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at callArsRec:232`
+  (5) 인증오류
+    `{ rsp_code: 'O0001', rsp_message: '인증요청 거부-인증 파라미터 오류 ([117])' }`
+    - 강사님 코드 복사해오면서 내 인증키값/비밀키값 변경안했음
+#
+# 2019. 05. 21
 # 둘째날
 # 과정
   (1) nodejs 기본문법  
@@ -7,9 +50,11 @@
   (1) console.log, 변수, 함수, 객체 생성, 배열, 반복문(for, while),if/else
     - 배열은 여러 타입 동시에 사용 가능하지만 -> 런타임 에러에 취약해짐  
     - 반복문 내 임시 변수 i에 대한 별도의 타입 선언 필요없음;  
-      for(i = 0; i < 3; ++i) or for(var i = 0; i < 3; ++i);  
+      `for(i = 0; i < 3; ++i) or for(var i = 0; i < 3; ++i);`  
+
   (2) 동기식/비동기식  
-    - 일의 순서가 중요할 때는 동기식, 그렇지 않을 때는 비동기식으로 일 처리 맡겨 버려도 됨; 파일 Read/Write 작업과 같은 경우는 속도차가 나서 문제남  
+    - 일의 순서가 중요할 때는 동기식, 그렇지 않을 때는 비동기식으로 일 처리 맡겨 버려도 됨;  
+      파일 Read/Write 작업과 같은 경우는 속도차가 나서 문제남  
     - callback 함수로 해결하겠다.  
     *callback hell 문제*  
 
@@ -69,7 +114,7 @@ Error: getaddrinfo ENOTFOUND localhost localhost:3306
     - ref( https://stackoverflow.com/questions/25521755/errorerror-getaddrinfo-enotfound-mysql)
 
   (3) EJS와 Views 이해 잘 안됨  
-  
+
 # 2019. 05. 20
 # 첫날
 # 과정
