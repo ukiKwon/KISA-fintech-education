@@ -76,9 +76,11 @@ app.post('/join', function(req, res) {
     var mname = req.body.name;
     var mpwd = req.body.pwd;
     var memail = req.body.email;
+    var maccessToken = req.body.accessToken;
+    var mrefreshToken = req.body.refreshToken;
     //SQL - 삽입구문
-    var sql = 'INSERT INTO `KISA`.`user` (`uname`, `upwd`, `uemail`) VALUES (?,?,?);'
-    connection.query(sql, [mname, mpwd, memail],function(error, results) {
+    var sql = 'INSERT INTO `KISA`.`user` (`uname`, `upwd`, `uemail`, `uaccessToken`, `refreshToken`) VALUES (?,?,?,?,?);'
+    connection.query(sql,[mname, mpwd, memail, maccessToken, mrefreshToken], function (error, results) {
         if (error) throw error;
         else {
             console.log("SQL query is executed!!!!");

@@ -1,4 +1,17 @@
 # KISA_fintechSchool  
+# 2018. 05. 23
+# 과정
+# 일지
+  (1) (어제 못한) Mysql-token 컬럼 추가
+    `ALTER TABLE user ADD COLUMN accessToken varchar(255);
+    ALTER TABLE user ADD COLUMN refreshToken varchar(255);`  
+
+    - Database 구조 변경
+    `CREATE TABLE user ( unum int AUTO_INCREMENT, uname varchar(255) NOT NULL, upwd varchar(255) NOT NULL, uid varchar(255), ujoinday DATETIME, uphone varchar(255), uemail varchar(255), uaccessToken varchar(2550), urefreshToken varchar(255), PRIMARY KEY(uid));`  
+
+  (2)
+
+# 에러
 # 2019. 05. 22
 # 과정
 # 일지
