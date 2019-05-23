@@ -9,9 +9,38 @@
     - Database 구조 변경
     `CREATE TABLE user ( unum int AUTO_INCREMENT, uname varchar(255) NOT NULL, upwd varchar(255) NOT NULL, uid varchar(255), ujoinday DATETIME, uphone varchar(255), uemail varchar(255), uaccessToken varchar(2550), urefreshToken varchar(255), PRIMARY KEY(uid));`  
 
-  (2)
+  (2) 로그인 페이지 만들기
+    - 'postman' 설치; 현업가서도 자주 쓸 거임.
+    - '최근에 로그인한 시간' 컬럼을 꼭 만들어주자. 나중에 관리를 위한 변수값.
+    - 'jsonwebtoken' npm 설치
+    - cors 사용
+    - /views/hf 추가를 했고 header와 footer를 통한 구조화된 하면 구성을 함.  
+    -
+  (3) 토큰키 풀어내기
+  (4) 모바일 같은 경우는 세션타임 관리 어려워서 토큰 받아서 쓰는 것이 좋더라.
+  (5) 사용자 정보 조회
+    - GET 방식이니깐 form 형식은 쓰지 않고
+    -
+    *인증이 필요한 정보는 'auth'를 추가시키고 사용하자!*  
+  (6) Main 화면 구성
+    -
+# 정보
+  (1) auth : auth-midware는 알아볼 수 있는 정도로 가공해주는 역할  
+    - auth에 있는 tokeyKey값과 express.ejs에 있는 Token key값이 같아야한다.
+      : 인증하는 사람의 비밀키쯤된다.
+  (2) 데이터 세트 추가  
+    - 공동플랫폼상의 테스트 데이터와 인증할 당시에 은행'오픈' 설정할때의 계좌랑 같아야함.
 
 # 에러
+  (1) 변수 이름 충돌 -> 모두 수정됨
+  (2) sql 에러
+    `TypeError: Cannot read property 'upwd' of undefined`
+      -> 내 디비에 분명하게 선언되어있는 컬럼값인데 안 돌아가네
+    [ 원인 ]  
+      -> postman에서 테스트할 때, 빈값이 날아가고 있었음.
+  (3) 메인 화면에 계좌 정보가 뜨지 않는 문제
+    - (단순) 로그로만 찍게해주고, res에 결과 내용을 저장하지 않았음.  
+    
 # 2019. 05. 22
 # 과정
 # 일지
