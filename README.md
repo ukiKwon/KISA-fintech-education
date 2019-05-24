@@ -1,13 +1,16 @@
 # KISA_fintechSchool  
 # 2019. 05. 24
 # 과정
-  (1)
+  (1) 거래 내역 조회  
+  (2)  
+
 # 일지
-  (1)
+  (1) 거래내역 조회 기능 추가  
+  (2)  
 # 정보
   (1) 'Selenium'으로 웹 크롤러 만들기 가능  
     - 웹 크롤러는 python 소스가 많아서 이런 류를 쓴다.  
-    - 여기다가 nodejs를 덧붙여서 쓰고 그런 작업의 연속
+    - 여기다가 nodejs를 덧붙여서 쓰고 그런 작업의 연속  
 # 에러
 # 2019. 05. 23
 # 과정
@@ -107,20 +110,19 @@
   (2) 동기식/비동기식  
     - 일의 순서가 중요할 때는 동기식, 그렇지 않을 때는 비동기식으로 일 처리 맡겨 버려도 됨;  
       파일 Read/Write 작업과 같은 경우는 속도차가 나서 문제남  
-    - callback 함수로 해결하겠다.  
-    *callback hell 문제*  
+    - callback 함수로 해결하겠다.(단, *callback hell 문제*)
 
-  (3) NPM
-    (3.1) 'npm init'으로 초기화
-      ->  'npm install request' 모듈 사용
-    - npm에서 쓸 꺼 하나 가져오면 된다.
-    - 우리가 이제 request를 날리는 도구(모듈)을 가져왔으니간 API로 보내보자
-    - 그런데 이런식이라면 filestream 상으로 매우 괴로워짐
+  (3) NPM  
+    (3.1) 'npm init'으로 초기화  
+      ->  'npm install request' 모듈 사용  
+    - npm에서 쓸 꺼 하나 가져오면 된다.  
+    - 우리가 이제 request를 날리는 도구(모듈)을 가져왔으니간 API로 보내보자  
+    - 그런데 이런식이라면 filestream 상으로 매우 괴로워짐  
 
-    (3.2) 'xml <-> json'으로 바꾸는 모듈 받아올거임
-      - xml로 주는 사이트에 가서 요청을 해야함.
+    (3.2) 'xml <-> json'으로 바꾸는 모듈 받아올거임  
+      - xml로 주는 사이트에 가서 요청을 해야함.  
       *금융API 할때도 이걸로 하는거임*  
-    (3.3) 금융 API 실습
+    (3.3) 금융 API 실습  
       - 그냥 바로 사용할 수는 없고, 쿼리 스트링에 내 고유키 값을 넘겨줘야함.  
 
   (4) DBMS : DB 세팅  
@@ -147,7 +149,6 @@
     `/home/uki408/Documents/git/KISA_fintechSchool/code/day2/mysqltest.js:12
   if (error) throw error;
              ^
-
 Error: getaddrinfo ENOTFOUND localhost localhost:3306
     at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:56:26)
     --------------------
