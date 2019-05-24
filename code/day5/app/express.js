@@ -64,6 +64,10 @@ app.get('/main', function (req, res) {
 app.get('/balance', function(req, res){
     res.render('balance');
 })
+//2-6. 화면-qr
+app.get('/qr', function(req, res) {
+    res.render('qr');
+})
 /*
   *
   * part3.서버-동작 선언
@@ -246,37 +250,6 @@ app.post('/transaction_list', auth, function(req,res){
         }
     })
 })
-
-// app.post('/getUser', auth, function(req, res){
-//     var userId = req.decoded.userId;
-//     var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
-//     connection.query(sql,[userId], function(err, result){
-//         if(err){
-//             console.error(err);
-//             throw err;
-//         }
-//         else {
-//           var getTokenUrl = "https://testapi.open-platform.or.kr/user/me?"
-//             + "user_seq_no=" + results[0].unum;
-//           var option = {
-//               method : "GET",
-//               url :getTokenUrl,
-//               headers : {
-//                 'Authorization' : 'Bearer' + results[0].uaccessToken;
-//               }
-//           };
-//           //서버로 보내는 부분
-//           request(option, function(err, response, body){
-//               if(err) throw err;
-//               else {
-//                   console.log(body);
-//                   var accessRequestResult = JSON.parse(body);
-//                   console.log(accessRequestResult);
-//               }
-//           })
-//         }
-//     })
-// })
 //3-$. 서버처리-토큰테스트
 app.get('/tokenTest', auth ,function(req, res){
     console.log(req.decoded);
