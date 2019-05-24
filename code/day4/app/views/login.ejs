@@ -41,8 +41,8 @@
               password : $("#passwordInput").val(),
           },
           success:function(data){
-              alert(data);
               sessionStorage.setItem('jwtToken', data);
+              location.hres("/main");
           }
       })
   });

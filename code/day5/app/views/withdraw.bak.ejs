@@ -1,0 +1,62 @@
+<% include ./hf/header.ejs %>
+<div class="page-content header-clear-medium">
+    <div class="content-boxed">
+        <div class="content">
+            <h3 class="bolder">계좌 송금</h3>
+            <table class="table-borders">
+                <tr>
+                  <td> 계좌 잔액 </td>
+                  <td id = "amountInput">
+                    <div class="input-style has-icon input-style-1 input-required">
+                        <span>원 단위</span>
+                        <em>(필수)</em>
+                        <input id="amountInput" type="name" placeholder="원">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td> 사용자 번호 </td>
+                  <td id = "fninumInput">
+                    <div class="input-style has-icon input-style-1 input-required">
+                        <span>25자리</span>
+                        <em>(필수)</em>
+                        <input id="fninumInput" type="name" placeholder="25자리">
+                    </div>
+                    </td>
+                </tr>
+                <tr>
+                  <td> 용도 </td>
+                  <td id = "contentInput">
+                    <div class="input-style has-icon input-style-1 input-required">
+                        <span>보내는 목적</span>
+                        <em>(필수)</em>
+                        <input id="contentInput" type="name" placeholder="기부">
+                    </div>
+                    </td>
+                </tr>
+            </table>
+            <a id="withdrawBtn" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-30 bottom-0">송금</a>
+        </div>
+    </div>
+<script>
+    var jwtToken = sessionStorage.getItem('jwtToken');
+    $("#withdrawBtn").click(function(){
+        $.ajax({
+            url:'http://localhost:3000/withdraw',
+            type : 'POST',
+            headers : {
+                'x-access-token' : jwtToken
+            },
+            data : {
+                dps_print_content : $("#contentInput").val(),
+                fintech_use_num : $("#fninumInput").val(),
+                tran_amt : $("#amountInput").val(),
+            },
+            success:function(data){
+                alert("송금되었습니다.");
+                console.log(data);
+            }
+        })
+    });
+</script>
+<% include ./hf/footer.ejs %>

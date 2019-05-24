@@ -1,6 +1,6 @@
 /*
   *
-  * 1.환경설정
+  *******  part1.환경설정 *******
   *
 */
 //1.1.설정-모듈 라이브러리
@@ -40,7 +40,7 @@ app.engine('html', require('ejs').renderFile);
 app.use(cors());
 /*
   *
-  * part2.프론트-화면 렌더링
+  *******  part2.프론트-화면 렌더링 *******
   *
 */
 //2-1. 화면-메인
@@ -49,7 +49,7 @@ app.get('/', function (req, res) {
 })
 //2-2. 화면-가입
 app.get('/join', function (req, res) {
-    res.render('signin')
+    res.render('join')
 });
 //2-3. 화면-로그인
 app.get('/login', function (req, res) {
@@ -68,9 +68,13 @@ app.get('/balance', function(req, res){
 app.get('/qr', function(req, res) {
     res.render('qr');
 })
+//2-7. 화면-송금
+app.get('/withdraw', function(req, res) {
+    res.render('withdraw');
+})
 /*
   *
-  * part3.서버-동작 선언
+  ******* part3.서버-동작 선언 *******
   *
 */
 //3-1. 서버처리-인증(API)
@@ -104,7 +108,7 @@ app.get('/authResult', function(req, res){
 //3-2. 서버처리-가입
 app.post('/join', function(req, res) {
     //test
-    console.log(req.body);
+    // console.log(req.body);
     //POST - 데이터 세트 정의
     var mname = req.body.name;
     var mpwd = req.body.password;
@@ -113,7 +117,7 @@ app.post('/join', function(req, res) {
     var mrefreshToken = req.body.refreshToken;
     var mnum = req.body.useseqnum;
 
-    console.log(mname, memail, mpwd, mnum);
+    // console.log(mname, memail, mpwd, mnum);
     var sql = 'INSERT INTO `KISA`.`user` (`uname`, `upwd`, `uid`, `uaccessToken`, `urefreshToken`, `unum`) VALUES (?,?,?,?,?,?);';
     connection.query(sql,[mname, mpwd, memail, maccessToken, mrefreshToken, mnum], function (error, results) {
         if (error) throw error;
@@ -126,7 +130,7 @@ app.post('/join', function(req, res) {
 app.post('/login', function (req, res) {
     var userEmail = req.body.email;
     var userPassword = req.body.password;
-    console.log(userEmail, userPassword);
+    // console.log(userEmail, userPassword);
 
     var sql = "SELECT * FROM user WHERE uid=?";
     connection.query(sql, [userEmail], function (error, results) {
@@ -146,7 +150,7 @@ app.post('/login', function (req, res) {
                         subject : 'user.login.info'
                     },
                     function(err, token){
-                        // console.log('로그인 성공', token)
+                        console.log('로그인 성공', token)
                         res.json(token)
                     }
                 )
@@ -167,7 +171,6 @@ app.post('/getUser', auth, function(req, res){
             throw err;
         }
         else {
-            console.log("찾음");
             var option = {
                 method : "GET",
                 url :'https://testapi.open-platform.or.kr/user/me?user_seq_no='+ result[0].unum,
@@ -196,7 +199,7 @@ app.post('/balance', auth, function(req,res){
             throw err;
         }
         else {
-            console.log(result[0].uaccessToken);
+            // console.log(result[0].uaccessToken);
             var balanceOption = {
                 method : "GET",
                 url :'https://testapi.open-platform.or.kr/v1.0/account/balance?fintech_use_num='+finNum+'&tran_dtime=20190523101921',
@@ -207,7 +210,7 @@ app.post('/balance', auth, function(req,res){
             request(balanceOption, function(err, response, body){
                 if(err) throw err;
                 else {
-                    console.log(body);
+                    // console.log(body);
                     res.json(JSON.parse(body));
                 }
             })
@@ -225,7 +228,7 @@ app.post('/transaction_list', auth, function(req,res){
             throw err;
         }
         else {
-            console.log(result[0].uaccessToken);
+            // console.log(result[0].uaccessToken);
             var option = {
                 method : "GET",
                 url :'https://testapi.open-platform.or.kr/v1.0/account/transaction_list?'
@@ -243,8 +246,112 @@ app.post('/transaction_list', auth, function(req,res){
             request(option, function(err, response, body){
                 if(err) throw err;
                 else {
-                    console.log(body);
+                    // console.log(body);
                     res.json(JSON.parse(body));
+                }
+            })
+        }
+    })
+})
+//3-7. 서버처리-송금
+app.post('/withdraw', auth, function (req, res) {
+    // console.log(req.decoded);
+    // console.log(req.body);
+    var userId = req.decoded.userId;
+    var finnum = req.body.fintech_use_num;
+    var point = req.body.tran_amt;
+    console.log("\n>>>>>> 서버단-충전 로그");
+    console.log("사용자 ID :", userId);
+    console.log("사용자 FINNUM :", finnum);
+    console.log("사용자 POINT :", point);
+    var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
+    connection.query(sql,[userId], function(err, result){
+        if(err){
+            console.error(err);
+            throw err;
+        }
+        else {
+            // console.log(result[0].uaccessToken);
+            var option = {
+                method : "POST",
+                url :'https://testapi.open-platform.or.kr/transfer/withdraw',
+                headers : {
+                    'Authorization' : 'Bearer ' + result[0].uaccessToken,
+                    'Content-Type' : 'application/json; charset=UTF-8'
+                },
+                json : {
+                    dps_print_content : '권성욱',
+                    fintech_use_num : finnum,
+                    tran_amt : 1000,
+                    print_content : '권성욱',
+                    tran_dtime : '20190523101921'
+                }
+            };
+            request(option, function(err, response, body){
+               if(err) throw err;
+               else {
+                   console.log("\nreq :", body);
+                   var requestResult = body
+                   //예외처리
+                   if(requestResult.rsp_code == "A0000"){
+                       var sql = "UPDATE user set upoint = upoint + ? WHERE uid = ?"
+                       connection.query(sql, [requestResult.tran_amt, userId], function(err, result){
+                           if(err){
+                               console.error(err);
+                               throw err;
+                           }
+                           else {
+                               res.json(JSON.parse(body));
+                           }
+                       })
+                   }
+                   else if(requestResult.rsp_code == "A0002"){
+                     console.error("\n>>> 참가은행이 유효하지 않습니다.\n");
+                   }
+                   else if(requestResult.rsp_code == "A0005"){
+                        console.error("\n>>> 핀테크 번호가 유효하지 않습니다.\n");
+                   }
+               }
+           })
+        }
+    })
+})
+//3-8. 서버처리-qr결제
+app.post('/withdrawQR', auth, function (req, res) {
+    var userId = req.decoded.userId;
+    var finNum = req.body.qrFin;
+    var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
+    connection.query(sql,[userId], function(err, result){
+        if(err){
+            console.error(err);
+            throw err;
+        }
+        else {
+            // console.log(result[0].uaccessToken);
+            var option = {
+                method : "POST",
+                url :'https://testapi.open-platform.or.kr/transfer/withdraw',
+                headers : {
+                    'Authorization' : 'Bearer ' + result[0].uaccessToken,
+                    'Content-Type' : 'application/json; charset=UTF-8'
+                },
+                json : {
+                    dps_print_content : '권성욱',
+                    fintech_use_num : finNum,
+                    tran_amt : 1000,
+                    print_content : '권성욱',
+                    tran_dtime : '20190523101921'
+                }
+            };
+            request(option, function(err, response, body){
+                if(err) throw err;
+                else {
+                    if(body.rsp_code == "A0000"){
+                        res.json(1);
+                    }
+                    else {
+                        res.json(2);
+                    }
                 }
             })
         }

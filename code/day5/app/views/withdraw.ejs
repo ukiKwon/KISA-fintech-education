@@ -1,0 +1,61 @@
+<% include ./hf/header.ejs %>
+<div class="page-content header-clear-medium">
+    <div class="content-boxed">
+        <div class="content">
+            <h3 class="bolder">충전하기</h3>
+            <table class="table-borders">
+                <tr>
+                  <td> 충전 잔액 </td>
+                  <td>
+                    <div class="input-style has-icon input-style-1 input-required">
+                        <span>원 단위</span>
+                        <em>(필수)</em>
+                        <input id="amountInput" type="name" placeholder="원">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+            </table>
+            <a id="withdrawBtn" class="button button-full button-m shadow-large button-round-small bg-green1-dark top-30 bottom-0">가즈아</a>
+        </div>
+    </div>
+<script>
+    function getQueryStringObject() {
+    var a = window.location.search.substr(1).split('&');
+    if (a == "") return {};
+    var b = {};
+    for (var i = 0; i < a.length; ++i) {
+        var p = a[i].split('=', 2);
+        if (p.length == 1)
+            b[p[0]] = "";
+        else
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+    }
+    return b;
+    }
+    var qs = getQueryStringObject();
+    var jwtToken = sessionStorage.getItem('jwtToken');
+    $("#withdrawBtn").click(function(){
+        console.log("핀테크넘버 : ", qs.fin_use_num);
+        $.ajax({
+            url:'http://localhost:3000/withdraw',
+            type : 'POST',
+            headers : {
+                'x-access-token' : jwtToken
+            },
+            data : {
+                // dps_print_content : $("#contentInput").val(),
+                fintech_use_num : qs.fin_use_num,
+                tran_amt : $("#amountInput").val()
+            },
+            success:function(data){
+                alert("송금되었습니다.");
+                console.log(data);
+            },
+            error:function(error) {
+                console.log(error);
+            }
+        })
+    });
+</script>
+<% include ./hf/footer.ejs %>

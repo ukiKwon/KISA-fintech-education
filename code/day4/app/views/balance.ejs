@@ -1,11 +1,36 @@
 <% include ./hf/header.ejs %>
-<div class="page-content">
-    <div data-height="cover-header" class="caption bottom-0">
-        <div class="caption-center">
-            <div class="content-boxed left-40 right-40">
-                <div class="content top-20 bottom-40">
+<div class="page-content header-clear-medium">
+    <div class="content-boxed">
+        <div class="content">
+            <h3 class="bolder">계좌 잔액</h3>
+            <table class="table-borders">
+                <tr>
+                    <td>계좌 잔액</td>
+                    <td id="ammount"></td>
+                </tr>
 
-            </div>
+            </table>
+        </div>
+    </div>
+
+    <div class="content-boxed">
+        <div class="content">
+            <h3 class="bolder">계좌 거래내역</h3>
+            <p>
+                계좌의 거래내역을 조회합니다
+            </p>
+
+            <table class="table-borders">
+                <tr>
+                    <th>거래일</th>
+                    <th>거래시간</th>
+                    <th>입출금구분</th>
+                    <th>통장인자내역</th>
+                    <th>거래금액</th>
+                    <th>잔액</th>
+                </tr>
+                <tbody id="transactionTable"></tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -22,21 +47,21 @@
             b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
     }
     return b;
-}
-        var qs = getQueryStringObject();
-        var jwtToken = sessionStorage.getItem('jwtToken');
-        $.ajax({
-            url:'http://localhost:3000/balance',
-            type : 'POST',
-            headers : {
-                'x-access-token' : jwtToken
-            },
-            data : {
-                finNum : qs.fin_use_num
-            },
-            success:function(data){
-                console.log(data);
-            }
-        })
+    }
+    var qs = getQueryStringObject();
+    var jwtToken = sessionStorage.getItem('jwtToken');
+    $.ajax({
+        url:'http://localhost:3000/balance',
+        type : 'POST',
+        headers : {
+            'x-access-token' : jwtToken
+        },
+        data : {
+            finNum : qs.fin_use_num
+        },
+        success:function(data){
+            console.log(data);
+        }
+    })
 </script>
 <% include ./hf/footer.ejs %>
