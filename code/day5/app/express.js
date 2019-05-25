@@ -181,8 +181,7 @@ app.post('/getUser', auth, function(req, res){
             request(option, function(err, response, body){
                 if(err) throw err;
                 else {
-                    console.log(body);
-                    res.json(JSON.parse(body));
+                    res.json(JSON.parse(body));//서버에서 body값을 JSON처리 하면 프론트에서 data로 받게됨.
                 }
             })
         }
@@ -301,7 +300,9 @@ app.post('/withdraw', auth, function (req, res) {
                                throw err;
                            }
                            else {
-                               res.json(JSON.parse(body));
+                                console.log(JSON.parse(body));
+                                res.json(1);
+                               //res.json(JSON.parse(body));
                            }
                        })
                    }
