@@ -376,7 +376,7 @@ app.post('/getAuthToken', auth, function (req, res) {
       }
   };
   request(option, function(err, response, body){
-      if(err) throw err;
+      if(err) { throw err;}
       else {
           console.log(">> 기관 인증이 되었습니다.");
           res.json(JSON.parse(body));
@@ -389,10 +389,10 @@ app.post('/checkAccount', auth, function (req, res) {
     var userId = req.decoded.userId;
     var mAuthToken = req.body.auth_accessToken;
     console.log("사용자 ID :", userId);
-    console.log("기관 토큰 : ", mAuthToken);
-    if (mAuthToken == '') {
+    console.log("기관 토큰 :", mAuthToken);
+    if (mAuthToken == null) {
         console.log(">> 기관 인증 안됨");
-        rse.json("1");
+        res.json(1);
     }
     else {
         var getTokenUrl = "https://testapi.open-platform.or.kr/v1.0/inquiry/real_name";
@@ -412,10 +412,17 @@ app.post('/checkAccount', auth, function (req, res) {
             }
         };
         request(option, function(err, response, body){
-          if(err) throw err;
+          if(err) {throw err;}
           else {
-            console.log(body);
-            res.json(body);
+            // console.log(body);
+            // res.json(body)
+            if (body.rsp_code == "A0000") {
+                console.log(">> 계좌 실명 조회가 되었습니다.");
+                res.json("A0000");
+            } else {
+                console.log(">> 기관 인증이 되어있지 않습니다.");
+                res.json(1);
+            }
           }
         })
     }

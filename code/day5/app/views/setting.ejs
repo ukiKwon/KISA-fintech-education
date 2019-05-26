@@ -28,7 +28,7 @@
             data: {
             },
             success: function (data) {
-                console.log("프론트단 데이터 :", data);
+                console.log("기관 인증 완료 -> 계좌 실명 조회 가능함");
                 sessionStorage.setItem('authToken', data.access_token);
             }
         })
@@ -49,8 +49,7 @@
                 if (data == "1") {
                     alert("기관 인증부터 해주십시오.");
                 } else {
-                alert("실계좌주입니다.");
-                console.log(data);
+                    alert("실계좌주입니다.");
               }
             }
         })
