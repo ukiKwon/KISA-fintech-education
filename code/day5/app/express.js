@@ -72,12 +72,16 @@ app.get('/qr', function(req, res) {
 app.get('/withdraw', function(req, res) {
     res.render('withdraw');
 })
+//2-8. 화면-환경설정
+app.get('/setting', function(req, res) {
+      res.render('setting');
+})
 /*
   *
   ******* part3.서버-동작 선언 *******
   *
 */
-//3-1. 서버처리-인증(API)
+//3-1. 인증(API)
 app.get('/authResult', function(req, res){
     var auth_code = req.query.code
     var getTokenUrl = "https://testapi.open-platform.or.kr/oauth/2.0/token";
@@ -105,7 +109,7 @@ app.get('/authResult', function(req, res){
         }
     })
 })
-//3-2. 서버처리-가입
+//3-2. 가입
 app.post('/join', function(req, res) {
     //test
     // console.log(req.body);
@@ -126,7 +130,7 @@ app.post('/join', function(req, res) {
         }
     });
 });
-//3-3. 서버처리-로그인
+//3-3. 로그인
 app.post('/login', function (req, res) {
     var userEmail = req.body.email;
     var userPassword = req.body.password;
@@ -161,13 +165,12 @@ app.post('/login', function (req, res) {
         }
     });
 })
-//3-4. 서버처리-계좌정보불러오기
+//3-4. 계좌정보불러오기
 app.post('/getUser', auth, function(req, res){
     var userId = req.decoded.userId;
     var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
     connection.query(sql,[userId], function(err, result){
         if(err){
-            console.error(err);
             throw err;
         }
         else {
@@ -187,7 +190,7 @@ app.post('/getUser', auth, function(req, res){
         }
     })
 })
-//3-5. 서버처리-잔액조회
+//3-5. 잔액조회
 app.post('/balance', auth, function(req,res){
     var userId = req.decoded.userId;
     var finNum = req.body.finNum;
@@ -216,7 +219,7 @@ app.post('/balance', auth, function(req,res){
         }
     })
 })
-//3-6. 서버처리-거래내역조회
+//3-6. 거래내역조회
 app.post('/transaction_list', auth, function(req,res){
     var userId = req.decoded.userId;
     var finNum = req.body.finNum;
@@ -245,17 +248,14 @@ app.post('/transaction_list', auth, function(req,res){
             request(option, function(err, response, body){
                 if(err) throw err;
                 else {
-                    // console.log(body);
                     res.json(JSON.parse(body));
                 }
             })
         }
     })
 })
-//3-7. 서버처리-송금
+//3-7. 송금
 app.post('/withdraw', auth, function (req, res) {
-    // console.log(req.decoded);
-    // console.log(req.body);
     var userId = req.decoded.userId;
     var finnum = req.body.fintech_use_num;
     var point = req.body.tran_amt;
@@ -289,35 +289,33 @@ app.post('/withdraw', auth, function (req, res) {
             request(option, function(err, response, body){
                if(err) throw err;
                else {
-                   console.log("\nreq :", body);
-                   var requestResult = body
+                   var requestResult = body;
                    //예외처리
                    if(requestResult.rsp_code == "A0000"){
-                       var sql = "UPDATE user set upoint = upoint + ? WHERE uid = ?"
+                       var sql = "UPDATE user SET upoint = upoint + ? WHERE uid = ?";
                        connection.query(sql, [requestResult.tran_amt, userId], function(err, result){
                            if(err){
                                console.error(err);
                                throw err;
                            }
                            else {
-                                console.log(JSON.parse(body));
+                                console.log(">> 충전이 완료되었습니다.");
                                 res.json(1);
-                               //res.json(JSON.parse(body));
                            }
                        })
                    }
                    else if(requestResult.rsp_code == "A0002"){
-                     console.error("\n>>> 참가은행이 유효하지 않습니다.\n");
+                        console.error("\n>> 참가은행이 유효하지 않습니다.");
                    }
                    else if(requestResult.rsp_code == "A0005"){
-                        console.error("\n>>> 핀테크 번호가 유효하지 않습니다.\n");
+                        console.error("\n>> 핀테크 번호가 유효하지 않습니다.");
                    }
                }
            })
         }
     })
 })
-//3-8. 서버처리-qr결제
+//3-8. QR 결제
 app.post('/withdrawQR', auth, function (req, res) {
     var userId = req.decoded.userId;
     var finNum = req.body.qrFin;
@@ -358,6 +356,70 @@ app.post('/withdrawQR', auth, function (req, res) {
         }
     })
 })
+//3-9. 기관 인증
+app.post('/getAuthToken', auth, function (req, res) {
+  console.log("\n>>>>>> 서버단-기관 인증");
+  var userId = req.decoded.userId;
+  console.log("사용자 ID :", userId);
+  var getTokenUrl = "https://testapi.open-platform.or.kr/oauth/2.0/token";
+  var option = {
+      method : "POST",
+      url : getTokenUrl,
+      headers : {
+          'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      form : {
+          client_id : "l7xxf08386a22ff9446d92a75312d5a290ac",
+          client_secret : "44c0930fc871461287088ca73882af67",
+          scope : "oob",
+          grant_type : "client_credentials"
+      }
+  };
+  request(option, function(err, response, body){
+      if(err) throw err;
+      else {
+          console.log(">> 기관 인증이 되었습니다.");
+          res.json(JSON.parse(body));
+      }
+  })
+})
+//3-9.계좌 실명 조회
+app.post('/checkAccount', auth, function (req, res) {
+    console.log("\n>>>>>> 서버단-계좌 실명 조회");
+    var userId = req.decoded.userId;
+    var mAuthToken = req.body.auth_accessToken;
+    console.log("사용자 ID :", userId);
+    console.log("기관 토큰 : ", mAuthToken);
+    if (mAuthToken == '') {
+        console.log(">> 기관 인증 안됨");
+        rse.json("1");
+    }
+    else {
+        var getTokenUrl = "https://testapi.open-platform.or.kr/v1.0/inquiry/real_name";
+        var option = {
+            method : "POST",
+            url : getTokenUrl,
+            headers : {
+                'Authorization' : 'Bearer ' + mAuthToken,
+                'Content-Type' : 'application/json; charset=UTF-8'
+            },
+            json : {
+                bank_code_std : '097',
+                account_num : "1234567890123456",
+                account_holder_info_type : ' ',
+                account_holder_info :  '911201',
+                tran_dtime : '20160310101921'
+            }
+        };
+        request(option, function(err, response, body){
+          if(err) throw err;
+          else {
+            console.log(body);
+            res.json(body);
+          }
+        })
+    }
+})
 //3-$. 서버처리-토큰테스트
 app.get('/tokenTest', auth ,function(req, res){
     console.log(req.decoded);
@@ -371,79 +433,3 @@ app.get('/ajaxTest',function(req, res){
 //3.$. 서버처리-대기
 app.listen(3000);
 console.log("Listening on port", port);
-
-//버려진 내 코드
-// connection.connect();
-// //express으로 public(디자인패턴이 들어있는)을 사용을 하겠다
-// app.use(express.static(__dirname + '/public'));
-// //'/' 경로에 대한 화면 세팅
-// app.get("/", function (request, response) {
-//     var user_name = request.query.user_name;
-//     response.end("Hello " + user_name + "!");
-// });
-//
-// //express에 ejs 적용
-// app.set('view engine', 'ejs');
-// app.set('views', './views');  //html템플릿파일에 기본주소값을 ./views로 지정
-// //'/views'에 대한 화면 세팅
-// app.get('/views',function(req,res){
-//     res.render('index'); //rending을 함으로써 ejs로 활성화된 상태
-// });
-// //'/join'에 대한 화면 세팅
-// app.get('/join', function(req, res) {
-//     res.render('pageapp-register');
-// });
-// //express-json 사용
-// app.use(express.json());
-// app.use(express.urlencoded({extended:false}));
-// app.post('/join', function(req, res) {
-//     //test
-//     console.log(req.body);
-//     //POST - 데이터 세트 정의
-//     var mname = req.body.name;
-//     var mpwd = req.body.pwd;
-//     var memail = req.body.email;
-//     //SQL - 삽입구문
-//     var sql = 'INSERT INTO `KISA`.`user` (`uname`, `upwd`, `uemail`) VALUES (?,?,?);'
-//     connection.query(sql, [mname, mpwd, memail],function(error, results) {
-//         if (error) throw error;
-//         else {
-//             console.log("SQL query is executed!!!!");
-//         }
-//     })
-// });
-// app.get('/authResult', function(req, res){
-//     var auth_code = req.query.code
-//     var getTokenUrl = "https://testapi.open-platform.or.kr/oauth/2.0/token";
-//     var option = {
-//         method : "POST",
-//         url :getTokenUrl,
-//         headers : {
-//         },
-//         form : {
-//             code : auth_code,
-//             client_id : "l7xxf08386a22ff9446d92a75312d5a290ac",
-//             client_secret : "44c0930fc871461287088ca73882af67",
-//             redirect_uri : "http://localhost:3000/authResult",
-//             grant_type : "authorization_code"
-//         }
-//     };
-//     request(option, function(err, response, body){
-//         if(err) throw err;
-//         else {
-//             console.log(body);
-//             var accessRequestResult = JSON.parse(body);
-//             console.log(accessRequestResult);
-//             res.render('resultChild', {data : accessRequestResult})
-//         }
-//     })
-// })
-// //'/ajaxTest'에 대한 화면 세팅
-// app.get('/ajaxTest', function(req, res) {
-//     var result = "멍청이";
-//     res.json(result);
-//     console.log("ajax call");
-// });
-// //서버 대기 시작
-// app.listen(port);
-// console.log("Listening on port", port);

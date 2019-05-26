@@ -36,7 +36,6 @@
     var qs = getQueryStringObject();
     var jwtToken = sessionStorage.getItem('jwtToken');
     $("#withdrawBtn").click(function(){
-        console.log("핀테크넘버 : ", qs.fin_use_num);
         $.ajax({
             url:'http://localhost:3000/withdraw',
             type : 'POST',
@@ -48,9 +47,9 @@
                 fintech_use_num : qs.fin_use_num,
                 tran_amt : $("#amountInput").val()
             },
-            success:function(data){
-                alert("송금되었습니다.");
-                console.log(data);
+            success:function(data) {
+                if (data != null && data == "1")
+                  alert("송금되었습니다.");
             },
             error:function(error) {
                 console.log(error);

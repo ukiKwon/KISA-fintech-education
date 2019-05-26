@@ -1,4 +1,32 @@
 # KISA_fintechSchool  
+# 2019. 05 .25 ~
+# 개인 추가 구현 시작
+# 과정
+  (1) 계좌 실명 조회 기능  
+# 에러
+  (1) 계좌 실명 조회 중, 파싱 에러  
+  - 파싱 에러  
+    `Unexpected token o in JSON at position 1`  
+    -> 원인 : 이미 파싱된 정보를 다시 파싱 하려고 들어서 생긴 에러  
+    -> 해결  
+      `//console.log(JSON.parse((body));  
+        console.log(body);`  
+  - access Token 거부  
+  ` rsp_code: 'O0002',  
+    rsp_message: 'access token 거부',  `
+    -> 원인  
+    `계좌실명조회와 입금이체 API는 2-legged API이므로 사용자인증(/authorize2)이 불필요합니다.  
+    우선 /token API(2-legged)를 호출하셔서 토큰을 획득하고, 계좌실명조회 API를 호출하시기 바랍니다.  
+    출처 : https://developers.open-platform.or.kr/forums/posts/1315`  
+    -> 해결  
+    1. 이용기관 토큰발급 API (2-legged) 호출해서 *이용기관의 accessToken 받아야함*  
+    2. 받은 *이용기관의 accessToken* 을 계좌실명조회 API의 헤더값에 넣어주면 해결  
+  - 계속해서 /login 페이지로 프론트 전환이 일어남
+    
+
+
+
+자세한 사항은 오픈API 명세서 7페이지를 참고하시기 바랍니다.`
 # 2019. 05. 24
 # 과정
   (1) 거래 내역 조회  
@@ -50,7 +78,7 @@
       · 은행코드, 계좌번호 : 사용자 등록 시 입력하신 테스트 은행코드, 계좌번호 입력(핀테크이용번호에 매칭되는 값)
     --------------------------------------------------------------------------------------------------------------------------
     감사합니다. 출처(https://developers.open-platform.or.kr/forums/posts/1404)`  
-      
+
 # 2019. 05. 23
 # 과정
 # 일지

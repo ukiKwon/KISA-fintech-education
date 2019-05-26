@@ -1,0 +1,59 @@
+<% include ./hf/header.ejs %>
+<div class="page-content header-clear-medium">
+      <link rel="stylesheet" type="text/css" href="styles/blog.css">
+      <div class="content-boxed">
+          <div class="content bottom-0">
+            <div class="blog-list-item caption caption-margins round-medium shadow-large" data-height="150" style="height : 150px">
+                <div class="caption-center left-15 text-left">
+                  <h1 class="color-white bolder">계좌 실명 조회</h1>
+                </div>
+                <div class="caption-center right-15 top-15 text-right">
+                    <a id="getAuthToken" class="back-button button button-xs button-round-huge bg-highlight">인증</a>
+                    <a id="checkAccount" class="back-button button button-xs button-round-huge bg-highlight">조회</a>
+                </div>
+                <div class="caption-overlay bg-black opacity-70"></div>
+                <div class="caption-bg bg-18"></div>
+            </div>
+          </div>
+      </div>
+<script>
+    var jwtToken = sessionStorage.getItem('jwtToken');
+    $("#getAuthToken").click(function() {
+        var authToken;
+        $.ajax({
+            url: 'http://localhost:3000/getAuthToken',
+            type: 'POST',
+            headers: {
+                'x-access-token': jwtToken
+            },
+            data: {
+            },
+            success: function (data) {
+                console.log("프론트단 데이터 :", data);
+                sessionStorage.setItem('authToken', data.access_token);
+            }
+        })
+    });
+    $("#checkAccount").click(function() {
+        var authToken = sessionStorage.getItem('authToken');
+        $.ajax({
+            url: 'http://localhost:3000/checkAccount',
+            type: 'POST',
+            headers: {
+                'x-access-token': jwtToken
+            },
+            data: {
+                'auth_accessToken' : authToken
+            },
+            success: function (data) {
+                if (data == "1") {
+                    alert("기관 인증부터 해주십시오.");
+                } else {
+                alert("실계좌주입니다.");
+                console.log(data);
+              }
+            }
+        })
+    });
+</script>
+<% include ./hf/footer.ejs %>
