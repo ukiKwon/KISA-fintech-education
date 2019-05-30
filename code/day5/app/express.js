@@ -4,15 +4,15 @@
   *
 */
 //1.1.설정-모듈 라이브러리
-var express = require("express");
+var express = require("express");//express
 var app = express();
-var request = require('request');
+var request = require('request');//request
 var port = process.env.PORT || 3000;
-var jwt = require('jsonwebtoken');
-var cors = require('cors');
+var jwt = require('jsonwebtoken');//token
 var auth = require('./lib/auth');
 var tokenKey = "sfisdifdslfsld";
-var mysql = require('mysql');
+var cors = require('cors');//cross-browsing
+var mysql = require('mysql');//mysql
 // ***********************************************************
 // mysql-booster 관리
 // var MysqlPoolBooster = require('mysql-pool-booster');
@@ -21,42 +21,42 @@ var mysql = require('mysql');
 // mysql.createPool(db_config);
 // ***********************************************************
 //1.2.설정-연동
-var connection = mysql.createConnection({
+var connection = mysql.createConnection(//mysql
+{
   host     : '127.0.0.1',//localhost로 하면 에러남
   user     : 'root',
   password : 'Flower5wantnight',
   database : 'KISA'
 });
 connection.connect();
-app.use(express.static(__dirname + '/public'));
 
+app.use(express.static(__dirname + '/public'));//express
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
-app.set('views', __dirname + '/views');
+app.set('views', __dirname + '/views');//ejs
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
-app.use(cors());
+app.use(cors());//cross-browsing
 /*
   *
   *******  part2.프론트-화면 렌더링 *******
   *
 */
-//2-1. 화면-메인
+//2-1. 메인
 app.get('/', function (req, res) {
     res.render('index')
 })
-//2-2. 화면-가입
+//2-2. 가입
 app.get('/join', function (req, res) {
     res.render('join')
 });
-//2-3. 화면-로그인
+//2-3. 로그인
 app.get('/login', function (req, res) {
     res.render('login');
 })
-//2-4. 화면-메인
-//원래는 auth 변수 넣지만 지금은 개발중에 있으니 일단 test용으로는 뺀다.
+//2-4. 메인
 app.get('/main', function (req, res) {
     res.render('main');
 })
@@ -64,15 +64,15 @@ app.get('/main', function (req, res) {
 app.get('/balance', function(req, res){
     res.render('balance');
 })
-//2-6. 화면-qr
+//2-6. qr
 app.get('/qr', function(req, res) {
     res.render('qr');
 })
-//2-7. 화면-송금
+//2-7. 송금
 app.get('/withdraw', function(req, res) {
     res.render('withdraw');
 })
-//2-8. 화면-환경설정
+//2-8. 환경설정
 app.get('/setting', function(req, res) {
       res.render('setting');
 })
