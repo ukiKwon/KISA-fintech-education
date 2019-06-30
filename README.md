@@ -13,7 +13,7 @@
         console.log(body);`  
   - access Token 거부  
   ` rsp_code: 'O0002',  
-    rsp_message: 'access token 거부',  `
+    rsp_message: 'access token 거부',  `  
     -> 원인  
     `계좌실명조회와 입금이체 API는 2-legged API이므로 사용자인증(/authorize2)이 불필요합니다.  
     우선 /token API(2-legged)를 호출하셔서 토큰을 획득하고, 계좌실명조회 API를 호출하시기 바랍니다.  
