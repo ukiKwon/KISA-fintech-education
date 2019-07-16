@@ -30,10 +30,7 @@ app.get('/', function (req, res) {
     res.render('index')
 })
 //2-4. 화면-메인
-//원래는 auth 변수 넣지만 지금은 개발중에 있으니 일단 test용으로는 뺀다.
-app.get('/main', function (req, res) {
-    res.render('main');
-})
+
 /*
   *
   * part3.서버-동작 선언
@@ -94,19 +91,6 @@ app.post('/gettimely', function(req, res) {
         }
     })
 });
-// request(option, function(err, response, body){
-//   if(err) {throw err;}
-//   else {
-//     // console.log(body);
-//     // res.json(body)
-//     if (body.rsp_code == "A0000") {
-//       res.json("A0000");
-//     } else {
-//       res.json(1);
-//     }
-//   }
-// })
-
 //3.$. 서버처리-대기
 app.listen(5555);
 console.log("Listening on port", port);
