@@ -63,35 +63,36 @@ app.post('/gettimely', function(req, res) {
                  else {
                      //has-the-name
                      for (i = results.length - 1; i > 0; --i) {
-			var mt = results[i].Tables_in_KISEMBLE;
-			console.log(mt);
+                  			var mt = results[i].Tables_in_KISEMBLE;
+                  			console.log(mt);
                         if (mt.indexOf(mTarget_table) != -1) {
-			    console.log(">> get table");
+			                      console.log(">> get table");
                             current_table = mt;
                             break;
                         }
                      }
-             //3. 등락률 조회
-             if (current_table != "") {
-                console.log(" >> user searched valid stocks");
-                var sql_select_table = 'SELECT stock_daybefore FROM ' + current_table + ' WHERE stock_code =?;';
-                connection.query(sql_select_table, [mstock], function (error, results) {
-                    if (error) { throw error;}
-                    else { //found the stock_data
-                        var aJson = new Object();
-                        aJson.stock_daybefore = results[0].stock_daybefore;
-                        aJson.stock_name = mname;
-                        JSON.stringify(aJson);
-                        return res.json(aJson);
-                    }
-                })
+                     //3. 등락률 조회
+                     if (current_table != "") {
+                          console.log(" >> user searched valid stocks");
+                          var sql_select_table = 'SELECT stock_daybefore FROM ' + current_table + ' WHERE stock_code =?;';
+                          connection.query(sql_select_table, [mstock], function (error, results) {
+                              if (error) { throw error;}
+                              else { //found the stock_data
+                                  var aJson = new Object();
+                                  aJson.stock_daybefore = results[0].stock_daybefore;
+                                  aJson.stock_name = mname;
+                                  JSON.stringify(aJson);
+                                  return res.json(aJson);
+                              }
+                          })
+                      }
+                     else { //현재 날짜에 맞는 테이블 존재하지 않음.(not found the table specific day)
+        		              console.log(">> There is no such a table");
+                          return res.json(10001);
+                     }
                  }
-             else { //현재 날짜에 맞는 테이블 존재하지 않음.(not found the table specific day)
-		  console.log(">> There is no such a table"); 
-                  return res.json(10001);
              })
-
-        }
+         }
     })
 });
 //3.$. 서버처리-대기
