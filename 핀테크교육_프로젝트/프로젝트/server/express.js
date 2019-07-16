@@ -64,7 +64,6 @@ app.post('/gettimely', function(req, res) {
                      //has-the-name
                      for (i = results.length - 1; i > 0; --i) {
                   			var mt = results[i].Tables_in_KISEMBLE;
-                  			console.log(mt);
                         if (mt.indexOf(mTarget_table) != -1) {
 			                      console.log(">> get table");
                             current_table = mt;
@@ -74,7 +73,7 @@ app.post('/gettimely', function(req, res) {
                      //3. 등락률 조회
                      if (current_table != "") {
                           console.log(" >> user searched valid stocks");
-                          var sql_select_table = 'SELECT stock_daybefore FROM ' + current_table + ' WHERE stock_code =?;';
+                          var sql_select_table = 'SELECT stock_daybefore FROM ' + current_table + ' WHERE stock_code=?;';
                           connection.query(sql_select_table, [mstock], function (error, results) {
                               if (error) { throw error;}
                               else { //found the stock_data
