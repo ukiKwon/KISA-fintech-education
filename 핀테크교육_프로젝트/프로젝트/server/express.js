@@ -42,16 +42,16 @@ app.post('/gettimely', function(req, res) {
     //test
     console.log(req.body);
     //POST - 데이터 세트 정의
-    var mstock = req.stock_code;
+    var mstock = req.body.stock_code;
     var current_table = "";
     var mname = "";
-    var mday = req.reg_date;
+    var mday = req.body.reg_date;
     console.log(mstock, mday);
     //해당날짜 테이블 선택
     const mTarget_table = new String("tb_summary");
 
     //1. 유효 종목 검색(Search a current stock)
-    var sql_search_stock = 'SELECT stock_name FROM stock_list WHERE stock_code = ?;';
+    var sql_search_stock = 'SELECT stock_name FROM tb_stock_list WHERE stock_code = ?;';
     connection.query(sql_search_stock, [mstock], function (error, results) {
         if (error) throw error;
         else {  //valid-stock_name
