@@ -10,7 +10,39 @@
 CREATE TABLE tb_summary_20190709_00095 (
     stock_code CHAR(6),
     prior_index SMALLINT,
-    stock_daybefore INT DEFAULT '0',
+    stock_daybefore FLOAT DEFAULT '0',
+    FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+CREATE TABLE tb_summary_20190710_00096 (
+    stock_code CHAR(6),
+    prior_index SMALLINT,
+    stock_daybefore FLOAT DEFAULT '0',
+    FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+CREATE TABLE tb_summary_20190711_00097 (
+    stock_code CHAR(6),
+    prior_index SMALLINT,
+    stock_daybefore FLOAT DEFAULT '0',
+    FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+CREATE TABLE tb_summary_20190712_00098 (
+    stock_code CHAR(6),
+    prior_index SMALLINT,
+    stock_daybefore FLOAT DEFAULT '0',
+    FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+CREATE TABLE tb_summary_20190715_00099 (
+    stock_code CHAR(6),
+    prior_index SMALLINT,
+    stock_daybefore FLOAT DEFAULT '0',
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -154,16 +186,40 @@ CREATE TABLE tb_today_stock_info_by_category (
   ```
 #샘플 데이터 삽입(0708 ~ 0712)
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/20190709_00095.csv'
-INTO TABLE tb_20190709_00095
+LOAD DATA LOCAL INFILE '~/stock_data/stock_list.csv'
+INTO TABLE tb_stock_list
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 ```
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/stock_list.csv'
-INTO TABLE tb_stock_list
+LOAD DATA LOCAL INFILE '~/stock_data/20190711_00097.csv'
+INTO TABLE tb_summary_20190711_00097
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+```
+```
+LOAD DATA LOCAL INFILE '~/stock_data/20190712_00098.csv'
+INTO TABLE tb_summary_20190712_00098
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+```
+```
+LOAD DATA LOCAL INFILE '~/stock_data/20190715_00099.csv'
+INTO TABLE tb_summary_20190715_00099
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+```
+```
+LOAD DATA LOCAL INFILE '~/stock_data/20190711_00097.csv'
+INTO TABLE tb_summary_20190711_00097
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
