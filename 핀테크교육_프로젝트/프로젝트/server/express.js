@@ -43,7 +43,7 @@ app.post('/gettimely', function(req, res) {
     console.log(req.body);
     //POST - 데이터 세트 정의
     var mstock = req.body.stock_code;
-    var current_table = "";
+    var current_table = new String("");
     var mname = "";
     var mday = req.body.reg_date;
     console.log(mstock, mday);
@@ -51,7 +51,7 @@ app.post('/gettimely', function(req, res) {
     const mTarget_table = new String("tb_summary");
 
     //1. 유효 종목 검색(Search a current stock)
-    var sql_search_stock = 'SELECT stock_name FROM tb_stock_list WHERE stock_code = ?;';
+    var sql_search_stock = 'SELECT stock_name FROM tb_stock_list WHERE stock_code=?;';
     connection.query(sql_search_stock, [mstock], function (error, results) {
         if (error) throw error;
         else {  //valid-stock_name
@@ -62,14 +62,15 @@ app.post('/gettimely', function(req, res) {
                  if (error) { throw error;}
                  else {
                      //has-the-name
-                     for (i = results.size() - 1; i > 0; --i) {
-                        if (results[i].indexOf(mTarget_table) != -1) {
-                            current_table = results[i];
+                     for (i = results.length - 1; i > 0; --i) {
+			var mt = results[i].Tables_in_KISEMBLE;
+			console.log(mt);
+                        if (mt.indexOf(mTarget_table) != -1) {
+			    console.log(">> get table");
+                            current_table = mt;
                             break;
                         }
                      }
-                 }
-             })
              //3. 등락률 조회
              if (current_table != "") {
                 console.log(" >> user searched valid stocks");
@@ -84,10 +85,12 @@ app.post('/gettimely', function(req, res) {
                         return res.json(aJson);
                     }
                 })
-             }
+                 }
              else { //현재 날짜에 맞는 테이블 존재하지 않음.(not found the table specific day)
+		  console.log(">> There is no such a table"); 
                   return res.json(10001);
-             }
+             })
+
         }
     })
 });
