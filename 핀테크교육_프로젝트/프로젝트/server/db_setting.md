@@ -5,6 +5,8 @@
     pwd : kisemble
 
 #Table 세팅
+>> 테이블 Ref
+
 >> 테이블 단축 (등락률)
 
 CREATE TABLE tb_summary_20190709_00095 (

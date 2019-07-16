@@ -1,5 +1,5 @@
 //Declare
-var = require("express");
+var express = require('express');
 var app = express();
 var request = require('request');
 var port = process.env.PORT || 5555;
@@ -14,11 +14,12 @@ var connection = mysql.createConnection({
   database : 'KISEMBLE'
 });
 connection.connect();
+var curday_stock_daily = "";
+///express
 app.use(express.static(__dirname + '/public'));
-
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
-
+//ejs
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
@@ -28,286 +29,84 @@ app.use(cors());
 app.get('/', function (req, res) {
     res.render('index')
 })
-//2-2. 화면-가입
-app.get('/join', function (req, res) {
-    res.render('pageapp-register')
-});
-//2-3. 화면-로그인
-app.get('/login', function (req, res) {
-    res.render('login');
-})
 //2-4. 화면-메인
 //원래는 auth 변수 넣지만 지금은 개발중에 있으니 일단 test용으로는 뺀다.
 app.get('/main', function (req, res) {
     res.render('main');
-})
-//2-5. 화면-잔액 조회
-app.get('/balance', function(req, res){
-    res.render('balance');
 })
 /*
   *
   * part3.서버-동작 선언
   *
 */
-//3-1. 서버처리-인증(API)
-app.get('/authResult', function(req, res){
-    var auth_code = req.query.code
-    var getTokenUrl = "https://testapi.open-platform.or.kr/oauth/2.0/token";
-    var option = {
-        method : "POST",
-        url :getTokenUrl,
-        headers : {
-        },
-        form : {
-            code : auth_code,
-            client_id : "l7xxf08386a22ff9446d92a75312d5a290ac",
-            client_secret : "44c0930fc871461287088ca73882af67",
-            redirect_uri : "http://localhost:3000/authResult",
-            grant_type : "authorization_code"
-        }
-    };
-    //서버로 보내는 부분
-    request(option, function(err, response, body){
-        if(err) throw err;
-        else {
-            console.log(body);
-            var accessRequestResult = JSON.parse(body);
-            console.log(accessRequestResult);
-            res.render('resultChild', {data : accessRequestResult})
-        }
-    })
-})
-//3-2. 서버처리-가입
-app.post('/join', function(req, res) {
+
+//3-2. 당일 데이터 호출
+app.post('/gettimely', function(req, res) {
     //test
     console.log(req.body);
     //POST - 데이터 세트 정의
-    var mname = req.body.name;
-    var mpwd = req.body.password;
-    var memail = req.body.email;
-    var maccessToken = req.body.accessToken;
-    var mrefreshToken = req.body.refreshToken;
-    var mnum = req.body.useseqnum;
+    var mstock = req.stock_code;
+    var current_table = "";
+    var mname = "";
+    var mday = req.reg_date;
+    console.log(mstock, mday);
+    //해당날짜 테이블 선택
+    const mTarget_table = new String("tb_summary");
 
-    console.log(mname, memail, mpwd, mnum);
-    var sql = 'INSERT INTO `KISA`.`user` (`uname`, `upwd`, `uid`, `uaccessToken`, `urefreshToken`, `unum`) VALUES (?,?,?,?,?,?);';
-    connection.query(sql,[mname, mpwd, memail, maccessToken, mrefreshToken, mnum], function (error, results) {
+    //1. 유효 종목 검색(Search a current stock)
+    var sql_search_stock = 'SELECT stock_name FROM stock_list WHERE stock_code = ?;';
+    connection.query(sql_search_stock, [mstock], function (error, results) {
         if (error) throw error;
-        else {
-            console.log("SQL query is successed!!!!");
-        }
-    });
-});
-//3-3. 서버처리-로그인
-app.post('/login', function (req, res) {
-    var userEmail = req.body.email;
-    var userPassword = req.body.password;
-    console.log(userEmail, userPassword);
-
-    var sql = "SELECT * FROM user WHERE uid=?";
-    connection.query(sql, [userEmail], function (error, results) {
-        if (error) throw error;
-        else {
-            console.log(userPassword, results[0].upwd);
-            if(userPassword == results[0].upwd){
-                jwt.sign(
-                    {
-                        userName : results[0].uname,
-                        userId : results[0].uid
-                    },
-                    tokenKey,
-                    {
-                        expiresIn : '1d',
-                        issuer : 'fintech.admin',
-                        subject : 'user.login.info'
-                    },
-                    function(err, token){
-                        console.log('로그인 성공', token)
-                        res.json(token)
+        else {  //valid-stock_name
+             mname = results[0].stock_name;
+             //2. 현재 관심사 테이블 호출
+             var sql_extract_daily_index = 'SHOW TABLES;';
+             connection.query(sql_extract_daily_index, function (error, results) {
+                 if (error) { throw error;}
+                 else {
+                     //has-the-name
+                     for (i = results.size() - 1; i > 0; --i) {
+                        if (results[i].indexOf(mTarget_table) != -1) {
+                            current_table = results[i];
+                            break;
+                        }
+                     }
+                 }
+             })
+             //3. 등락률 조회
+             if (current_table != "") {
+                console.log(" >> user searched valid stocks");
+                var sql_select_table = 'SELECT stock_daybefore FROM ' + current_table + ' WHERE stock_code =?;';
+                connection.query(sql_select_table, [mstock], function (error, results) {
+                    if (error) { throw error;}
+                    else { //found the stock_data
+                        var aJson = new Object();
+                        aJson.stock_daybefore = results[0].stock_daybefore;
+                        aJson.stock_name = mname;
+                        JSON.stringify(aJson);
+                        return res.json(aJson);
                     }
-                )
-            }
-            else {
-                res.json('등록정보가 없습니다');
-            }
-        }
-    });
-})
-//3-4. 서버처리-계좌정보불러오기
-app.post('/getUser', auth, function(req, res){
-    var userId = req.decoded.userId;
-    var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
-    connection.query(sql,[userId], function(err, result){
-        if(err){
-            console.error(err);
-            throw err;
-        }
-        else {
-            console.log("찾음");
-            var option = {
-                method : "GET",
-                url :'https://testapi.open-platform.or.kr/user/me?user_seq_no='+ result[0].unum,
-                headers : {
-                    'Authorization' : 'Bearer ' + result[0].uaccessToken
-                }
-            };
-            request(option, function(err, response, body){
-                if(err) throw err;
-                else {
-                    console.log(body);
-                    res.json(JSON.parse(body));
-                }
-            })
+                })
+             }
+             else { //현재 날짜에 맞는 테이블 존재하지 않음.(not found the table specific day)
+                  return res.json(10001);
+             }
         }
     })
-})
-//3-5. 서버처리-잔액조회
-app.post('/balance', auth, function(req,res){
-    var userId = req.decoded.userId;
-    var finNum = req.body.finNum;
-    var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
-    connection.query(sql,[userId], function(err, result){
-        if(err){
-            console.error(err);
-            throw err;
-        }
-        else {
-            console.log(result[0].uaccessToken);
-            var option = {
-                method : "GET",
-                url :'https://testapi.open-platform.or.kr/v1.0/account/balance?fintech_use_num='+finNum+'&tran_dtime=20190523101921',
-                headers : {
-                    'Authorization' : 'Bearer ' + result[0].uaccessToken
-                }
-            };
-            request(option, function(err, response, body){
-                if(err) throw err;
-                else {
-                    console.log(body);
-                    res.json(JSON.parse(body));
-                }
-            })
-        }
-    })
-})
-// app.post('/getUser', auth, function(req, res){
-//     var userId = req.decoded.userId;
-//     var sql = "SELECT unum, uaccessToken FROM user WHERE uid = ?";
-//     connection.query(sql,[userId], function(err, result){
-//         if(err){
-//             console.error(err);
-//             throw err;
-//         }
-//         else {
-//           var getTokenUrl = "https://testapi.open-platform.or.kr/user/me?"
-//             + "user_seq_no=" + results[0].unum;
-//           var option = {
-//               method : "GET",
-//               url :getTokenUrl,
-//               headers : {
-//                 'Authorization' : 'Bearer' + results[0].uaccessToken;
-//               }
-//           };
-//           //서버로 보내는 부분
-//           request(option, function(err, response, body){
-//               if(err) throw err;
-//               else {
-//                   console.log(body);
-//                   var accessRequestResult = JSON.parse(body);
-//                   console.log(accessRequestResult);
-//               }
-//           })
-//         }
-//     })
+});
+// request(option, function(err, response, body){
+//   if(err) {throw err;}
+//   else {
+//     // console.log(body);
+//     // res.json(body)
+//     if (body.rsp_code == "A0000") {
+//       res.json("A0000");
+//     } else {
+//       res.json(1);
+//     }
+//   }
 // })
-//3-$. 서버처리-토큰테스트
-app.get('/tokenTest', auth ,function(req, res){
-    console.log(req.decoded);
-})
-//3-$. 서버처리-Test용
-app.get('/ajaxTest',function(req, res){
-    console.log('ajax call');
-    var result = "hello";
-    res.json(result);
-})
+
 //3.$. 서버처리-대기
-app.listen(3000);
+app.listen(5555);
 console.log("Listening on port", port);
-
-//버려진 내 코드
-// connection.connect();
-// //express으로 public(디자인패턴이 들어있는)을 사용을 하겠다
-// app.use(express.static(__dirname + '/public'));
-// //'/' 경로에 대한 화면 세팅
-// app.get("/", function (request, response) {
-//     var user_name = request.query.user_name;
-//     response.end("Hello " + user_name + "!");
-// });
-//
-// //express에 ejs 적용
-// app.set('view engine', 'ejs');
-// app.set('views', './views');  //html템플릿파일에 기본주소값을 ./views로 지정
-// //'/views'에 대한 화면 세팅
-// app.get('/views',function(req,res){
-//     res.render('index'); //rending을 함으로써 ejs로 활성화된 상태
-// });
-// //'/join'에 대한 화면 세팅
-// app.get('/join', function(req, res) {
-//     res.render('pageapp-register');
-// });
-// //express-json 사용
-// app.use(express.json());
-// app.use(express.urlencoded({extended:false}));
-// app.post('/join', function(req, res) {
-//     //test
-//     console.log(req.body);
-//     //POST - 데이터 세트 정의
-//     var mname = req.body.name;
-//     var mpwd = req.body.pwd;
-//     var memail = req.body.email;
-//     //SQL - 삽입구문
-//     var sql = 'INSERT INTO `KISA`.`user` (`uname`, `upwd`, `uemail`) VALUES (?,?,?);'
-//     connection.query(sql, [mname, mpwd, memail],function(error, results) {
-//         if (error) throw error;
-//         else {
-//             console.log("SQL query is executed!!!!");
-//         }
-//     })
-// });
-// app.get('/authResult', function(req, res){
-//     var auth_code = req.query.code
-//     var getTokenUrl = "https://testapi.open-platform.or.kr/oauth/2.0/token";
-//     var option = {
-//         method : "POST",
-//         url :getTokenUrl,
-//         headers : {
-//         },
-//         form : {
-//             code : auth_code,
-//             client_id : "l7xxf08386a22ff9446d92a75312d5a290ac",
-//             client_secret : "44c0930fc871461287088ca73882af67",
-//             redirect_uri : "http://localhost:3000/authResult",
-//             grant_type : "authorization_code"
-//         }
-//     };
-//     request(option, function(err, response, body){
-//         if(err) throw err;
-//         else {
-//             console.log(body);
-//             var accessRequestResult = JSON.parse(body);
-//             console.log(accessRequestResult);
-//             res.render('resultChild', {data : accessRequestResult})
-//         }
-//     })
-// })
-// //'/ajaxTest'에 대한 화면 세팅
-// app.get('/ajaxTest', function(req, res) {
-//     var result = "멍청이";
-//     res.json(result);
-//     console.log("ajax call");
-// });
-// //서버 대기 시작
-// app.listen(port);
-// console.log("Listening on port", port);
-
