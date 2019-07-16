@@ -5,9 +5,21 @@
     pwd : kisemble
 
 #Table 세팅
+>> 테이블 단축 (등락률)
+
+CREATE TABLE tb_summary_20190709_00095 (
+    stock_code CHAR(6),
+    prior_index SMALLINT,
+    stock_daybefore INT DEFAULT '0',
+    FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
 >> tb_20190709_00095
 
-CREATE TABLE tb_20190709_00095(
+CREATE TABLE tb_20190709_00095 (
+    prior_index SMALLINT,
     stock_code CHAR(6),
     stock_name VARCHAR(50),
     cur_price VARCHAR(10),
@@ -21,7 +33,8 @@ CREATE TABLE tb_20190709_00095(
     market_capital_rate FLOAT DEFAULT '0',
     stock_listed INT DEFAULT '0',
     foreigner_hold_stocks BIGINT,
-    foreigner_hold_rate FLOAT
+    foreigner_hold_rate FLOAT,
+    num_of_stock SMALLINT
 );
 
 #주식데이터
@@ -68,6 +81,7 @@ CREATE TABLE tb_stock_category (
     ON UPDATE CASCADE
 );
 ```
+ALTER DATABASE KISEMBLE DEFAULT CHARACTER SET utf8;
 
 (2) 현재 업종별 정보(통계데이터) -> 10분 간격으로 < 크롤링 & 업데이트 >  
 {종목: 전일비 : 등락률}
@@ -140,13 +154,23 @@ CREATE TABLE tb_today_stock_info_by_category (
   ```
 #샘플 데이터 삽입(0708 ~ 0712)
 ```
-LOAD DATA LOCAL INFILE '/home/uki408/Downloads/20190709_00095.csv'
+LOAD DATA LOCAL INFILE '~/stock_data/20190709_00095.csv'
 INTO TABLE tb_20190709_00095
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 ```
+```
+LOAD DATA LOCAL INFILE '~/stock_data/stock_list.csv'
+INTO TABLE tb_stock_list
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+```
+#샘플 데이터 확인
+SELECT stock_code as '코드', stock_name as '이름', price_highest as '고가', foreigner_hold_stocks as '외국보유수' FROM tb_20190709_00095;
 
 #1차 과제
 (1) 기본 종목 정보 : excel -> insert 코드 짤 것
