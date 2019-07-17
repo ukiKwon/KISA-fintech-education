@@ -24,11 +24,12 @@
 #Table 세팅
 @1. 등락률 요약 테이블
 (1) 등락률만 보여주는 단축 테이블 - 샘플 날짜별
+{종목코드 : 종목순위 : 등락률}
 ```
 CREATE TABLE tb_summary_20190709_00095 (
     stock_code CHAR(6),
     prior_index SMALLINT,
-    stock_daybefore FLOAT DEFAULT '0',
+    stock_falling_rate FLOAT DEFAULT '0',
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -36,7 +37,7 @@ CREATE TABLE tb_summary_20190709_00095 (
 CREATE TABLE tb_summary_20190710_00096 (
     stock_code CHAR(6),
     prior_index SMALLINT,
-    stock_daybefore FLOAT DEFAULT '0',
+    stock_falling_rate FLOAT DEFAULT '0',
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -44,7 +45,7 @@ CREATE TABLE tb_summary_20190710_00096 (
 CREATE TABLE tb_summary_20190711_00097 (
     stock_code CHAR(6),
     prior_index SMALLINT,
-    stock_daybefore FLOAT DEFAULT '0',
+    stock_falling_rate FLOAT DEFAULT '0',
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -52,7 +53,7 @@ CREATE TABLE tb_summary_20190711_00097 (
 CREATE TABLE tb_summary_20190712_00098 (
     stock_code CHAR(6),
     prior_index SMALLINT,
-    stock_daybefore FLOAT DEFAULT '0',
+    stock_falling_rate FLOAT DEFAULT '0',
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -60,7 +61,7 @@ CREATE TABLE tb_summary_20190712_00098 (
 CREATE TABLE tb_summary_20190715_00099 (
     stock_code CHAR(6),
     prior_index SMALLINT,
-    stock_daybefore FLOAT DEFAULT '0',
+    stock_falling_rate FLOAT DEFAULT '0',
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
@@ -87,7 +88,7 @@ CREATE TABLE tb_[날짜명-인덱스값] (
 );
 
 @2. 주식 종목 분류
-{종목 코드 : 종목 이름}
+{종목 코드 : 종목명}
 ```
 CREATE TABLE tb_stock_list (
     stock_code CHAR(6),
@@ -96,28 +97,30 @@ CREATE TABLE tb_stock_list (
 );
 ```
 @3. 주식 업종 분류
+{업종코드 : 업종명}
 ```
 CREATE TABLE tb_category_list (
   category_code CHAR(6),
   category_name VARCHAR(100),
-  PRIMARY KEY(category_code),
+  PRIMARY KEY(category_code)
 );
 ```
 @4. 업종별 주식 분류
+{업종코드 : 종목코드}
 ```
 CREATE TABLE tb_stock_category (
     category_code CHAR(6),
     stock_code CHAR(6),
     FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
     ON DELETE CASCADE
-    ON UPDATE CASCADE
+    ON UPDATE CASCADE,
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 ```
 @00. 업종별 등락율 테이블
-{종목 : 등락률}
+{업종코드 : 등락률}
 ```
 CREATE TABLE tb_fr_category_20190709 (
   category_code CHAR(6),
@@ -184,6 +187,8 @@ CREATE TABLE tb_fr_category_20190709 (
   );
   ```
 #샘플 데이터 삽입(0708 ~ 0712)
+1. 종목 리스트
+{종목코드 : 종목명}
 ```
 LOAD DATA LOCAL INFILE '~/stock_data/stock_list.csv'
 INTO TABLE tb_stock_list
@@ -192,6 +197,7 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 ```
+2. 종목별 등락률 리스트
 ```
 LOAD DATA LOCAL INFILE '~/stock_data/20190709_00095.csv'
 INTO TABLE tb_summary_20190709_00095
@@ -231,6 +237,14 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
+```
+3. 업종 리스트
+```
+LOAD DATA LOCAL INFILE '~/stock_data/category/category_list.csv'
+INTO TABLE tb_category_list
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
 ```
 
 #1차 과제
