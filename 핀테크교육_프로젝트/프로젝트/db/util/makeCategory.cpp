@@ -28,10 +28,10 @@ int main()
 	sort(category.begin(), category.end());
 	category.erase(unique(category.begin(), category.end()), category.end());
 	//ouput
-	ofstream out_put("./result.md");
+	ofstream out_put("./category_list.md");
 	unsigned char i = 0;
 	for (uint index = 0; index < category.size(); ++index)
-
+	{
 			out_put <<  category[index] << endl;
 	}
 	return 0;

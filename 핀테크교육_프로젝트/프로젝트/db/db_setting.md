@@ -22,7 +22,7 @@
 (2) 업종에 따른 관련 종목 업로드(https://finance.naver.com/sise/sise_group_detail.nhn?type=upjong&no=136)
 
 #Table 세팅
-1. 등락률 요약 테이블
+@1. 등락률 요약 테이블
 (1) 등락률만 보여주는 단축 테이블 - 샘플 날짜별
 ```
 CREATE TABLE tb_summary_20190709_00095 (
@@ -86,7 +86,7 @@ CREATE TABLE tb_[날짜명-인덱스값] (
     num_of_stock SMALLINT
 );
 
-2. 주식 종목 분류
+@2. 주식 종목 분류
 {종목 코드 : 종목 이름}
 ```
 CREATE TABLE tb_stock_list (
@@ -95,10 +95,10 @@ CREATE TABLE tb_stock_list (
     PRIMARY KEY(stock_code)
 );
 ```
-3. 주식 업종별 분류
+@3. 업종별 주식 분류
 ```
 CREATE TABLE tb_stock_category (
-    stock_category SMALINT AUTO_INCREMENT,
+    category_code SMALINT,
     stock_code CHAR(6),
     PRIMARY KEY(stock_category),
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
@@ -106,7 +106,8 @@ CREATE TABLE tb_stock_category (
     ON UPDATE CASCADE
 );
 ```
-4. 업종별 등락율 테이블
+@4. 업종별 종목 코드
+@00. 업종별 등락율 테이블
 {종목 : 등락률}
 ```
 CREATE TABLE tb_today_stock_info_by_category (
@@ -118,7 +119,7 @@ CREATE TABLE tb_today_stock_info_by_category (
   );  
 ```
 
-5. 전체 종목별 정보 : Ideal 형태  
+@00. 전체 종목별 정보 : Ideal 형태  
 {날짜 : 종목 코드 : 현재가 : 대비 : 등락률 : 거래량 : 거래 대금 : 고가 : 저가 : 시가총액 : 시가총액 비중 : 상장 주식수}
 *이슈 : FOREIGN KEY 추가시 문법 오류 뜨기때문에, 한시적인 테이블임*
 
