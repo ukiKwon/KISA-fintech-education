@@ -1,3 +1,6 @@
+#0718
+#API
+
 #0717 ~ #0718
 # 만들 기능   
   - 업종별 데이터 다 넘겨주기   
@@ -9,8 +12,12 @@
 
   (1) 테이블 생성   
     >> {업종 종목 코드 || 업종 이름} 테이블 생성; tb_category_list (v)
-    >> {업종 코드 || 종목 코드} 테이블 생성; tb_category_stocks ()
-    >> {업종 코드 || 등락률 } 테이블 생성; tb_category_fr_20190715 ()
+    >> {업종 코드 || 종목 코드} 테이블 생성; tb_stock_category (v)
+    >> {업종 코드 || 등락률 } 테이블 생성; tb_fr_category_20190709 (v)
+    tb_fr_category_20190710 (v)
+    tb_fr_category_20190711 (v)
+    tb_fr_category_20190712 (v)
+    tb_fr_category_20190715 (v)
 
   (2) 함수 만들기   
     - 업종별 데이터 다 넘겨주기   

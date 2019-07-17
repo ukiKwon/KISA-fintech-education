@@ -119,10 +119,38 @@ CREATE TABLE tb_stock_category (
     ON UPDATE CASCADE
 );
 ```
-@00. 업종별 등락율 테이블
+@5. 업종별 등락율 테이블
 {업종코드 : 등락률}
 ```
 CREATE TABLE tb_fr_category_20190709 (
+  category_code CHAR(6),
+  category_falling_rate FLOAT DEFAULT '0',
+  FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+CREATE TABLE tb_fr_category_20190710 (
+  category_code CHAR(6),
+  category_falling_rate FLOAT DEFAULT '0',
+  FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+CREATE TABLE tb_fr_category_20190711 (
+  category_code CHAR(6),
+  category_falling_rate FLOAT DEFAULT '0',
+  FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+CREATE TABLE tb_fr_category_20190712 (
+  category_code CHAR(6),
+  category_falling_rate FLOAT DEFAULT '0',
+  FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+CREATE TABLE tb_fr_category_20190715 (
   category_code CHAR(6),
   category_falling_rate FLOAT DEFAULT '0',
   FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
@@ -186,7 +214,7 @@ CREATE TABLE tb_fr_category_20190709 (
       ON UPDATE CASCADE
   );
   ```
-#샘플 데이터 삽입(0708 ~ 0712)
+#샘플 데이터 삽입(0709 ~ 0715)
 1. 종목 리스트
 {종목코드 : 종목명}
 ```
@@ -196,8 +224,10 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
-```
+```   
+
 2. 종목별 등락률 리스트
+{종목코드 : 종목순위 : 등락률}
 ```
 LOAD DATA LOCAL INFILE '~/stock_data/20190709_00095.csv'
 INTO TABLE tb_summary_20190709_00095
@@ -239,12 +269,31 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 ```
 3. 업종 리스트
+{업종코드 : 업종명}
 ```
 LOAD DATA LOCAL INFILE '~/stock_data/category/category_list.csv'
 INTO TABLE tb_category_list
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\n';
+```
+4. 업종별 종목
+{업종코드 : 종목코드}
+```
+LOAD DATA LOCAL INFILE '~/stock_data/category/stock_by_category_on_code.csv'
+INTO TABLE tb_stock_category
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+```
+5. 업종별 등락률
+{업종코드 : 등락률}
+```
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/stock_by_category_on_code.csv'
+INTO TABLE tb_fr_category_20190709
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
 ```
 
 #1차 과제
