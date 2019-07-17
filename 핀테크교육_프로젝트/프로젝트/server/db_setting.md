@@ -4,10 +4,27 @@
   - database : KISEMBLE
     pwd : kisemble
 
+#주식데이터
+#Data 건수
+1. 샘플식 예제
+6(총 장시간) x 6(10분주기) x 2000(종목수) = 72,000 * 30 (한달) = 216,000
+: 한 파티션에 21만 건 * 12(월) = 252만 건  
+
+2. 전체 예제
+6(총 장시간) x 3600(1초주기) x 2000(종목수) = 43,200,000 * 30 (한달) = 1,296,000,000
+: 한 파티션에 12억 건 * 12(월) = 144억 건  
+
+3. 과거 데이터는 미리 계산해두고 테이블(통계 데이터)에 별도로 저장해둘 것.
+
+#기능
+//데이터 주기 10분
+(1) 종목에 따른 관련 정보 업로드
+(2) 업종에 따른 관련 종목 업로드(https://finance.naver.com/sise/sise_group_detail.nhn?type=upjong&no=136)
+
 #Table 세팅
 1. 등락률 요약 테이블
->> 테이블 단축 (등락률)
-
+(1) 등락률만 보여주는 단축 테이블 - 샘플 날짜별
+```
 CREATE TABLE tb_summary_20190709_00095 (
     stock_code CHAR(6),
     prior_index SMALLINT,
@@ -15,7 +32,7 @@ CREATE TABLE tb_summary_20190709_00095 (
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
-);
+);   
 CREATE TABLE tb_summary_20190710_00096 (
     stock_code CHAR(6),
     prior_index SMALLINT,
@@ -23,7 +40,7 @@ CREATE TABLE tb_summary_20190710_00096 (
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
-);
+);   
 CREATE TABLE tb_summary_20190711_00097 (
     stock_code CHAR(6),
     prior_index SMALLINT,
@@ -31,7 +48,7 @@ CREATE TABLE tb_summary_20190711_00097 (
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
-);
+);   
 CREATE TABLE tb_summary_20190712_00098 (
     stock_code CHAR(6),
     prior_index SMALLINT,
@@ -39,7 +56,7 @@ CREATE TABLE tb_summary_20190712_00098 (
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
-);
+);   
 CREATE TABLE tb_summary_20190715_00099 (
     stock_code CHAR(6),
     prior_index SMALLINT,
@@ -47,12 +64,10 @@ CREATE TABLE tb_summary_20190715_00099 (
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
-);
-
-
->> tb_20190709_00095
-
-<!-- CREATE TABLE tb_20190709_00095 (
+);   
+```
+(2) 주식 RAW 데이터 테이블
+CREATE TABLE tb_[날짜명-인덱스값] (
     prior_index SMALLINT,
     stock_code CHAR(6),
     stock_name VARCHAR(50),
@@ -69,33 +84,10 @@ CREATE TABLE tb_summary_20190715_00099 (
     foreigner_hold_stocks BIGINT,
     foreigner_hold_rate FLOAT,
     num_of_stock SMALLINT
-); -->
-2.
-#주식데이터
-#Data 건수
-(1) 샘플식 예제
-6(총 장시간) x 6(10분주기) x 2000(종목수) = 72,000 * 30 (한달) = 216,000
-: 한 파티션에 21만 건 * 12(월) = 252만 건
+);
 
-(2) 전체 예제
-6(총 장시간) x 3600(1초주기) x 2000(종목수) = 43,200,000 * 30 (한달) = 1,296,000,000
-: 한 파티션에 12억 건 * 12(월) = 144억 건
-
-(3) 과거 데이터는 미리 계산해두고 테이블(통계 데이터)에 별도로 저장해둘 것.
-
-#기능
-//데이터 주기 10분
-(1) 종목에 따른 관련 정보 업로드
-(2) 업종에 따른 관련 종목 업로드(https://finance.naver.com/sise/sise_group_detail.nhn?type=upjong&no=136)
-
-#전체 테이블 확인
-  >> desc tb_stock_list;desc tb_stock_category;desc tb_today_stock_info_by_category;
-    desc tb_exday_stock_info;desc tb_today_stock_info;
-
-#테이블
-(1) 이름표 값들; 총 2000개 = 한번에 해도 무리없음.
-{종목 코드 : 업종 코드 : 종목 이름}
-
+2. 주식 종목 분류
+{종목 코드 : 종목 이름}
 ```
 CREATE TABLE tb_stock_list (
     stock_code CHAR(6),
@@ -103,7 +95,7 @@ CREATE TABLE tb_stock_list (
     PRIMARY KEY(stock_code)
 );
 ```
-
+3. 주식 업종별 분류
 ```
 CREATE TABLE tb_stock_category (
     stock_category SMALINT AUTO_INCREMENT,
@@ -114,15 +106,11 @@ CREATE TABLE tb_stock_category (
     ON UPDATE CASCADE
 );
 ```
-ALTER DATABASE KISEMBLE DEFAULT CHARACTER SET utf8;
-
-(2) 현재 업종별 정보(통계데이터) -> 10분 간격으로 < 크롤링 & 업데이트 >  
-{종목: 전일비 : 등락률}
+4. 업종별 등락율 테이블
+{종목 : 등락률}
 ```
 CREATE TABLE tb_today_stock_info_by_category (
   stock_category CHAR(6),
-  stock_code CHAR(6),
-  stock_daybefore INTEGER DEFAULT '0',
   stock_falling_rate INTEGER DEFAULT '0',
   FOREIGN KEY(stock_category) REFERENCES tb_stock_category(stock_category)
   ON DELETE CASCADECURDATE()
@@ -130,7 +118,7 @@ CREATE TABLE tb_today_stock_info_by_category (
   );  
 ```
 
-(3) 전체 종목별 정보  
+5. 전체 종목별 정보 : Ideal 형태  
 {날짜 : 종목 코드 : 현재가 : 대비 : 등락률 : 거래량 : 거래 대금 : 고가 : 저가 : 시가총액 : 시가총액 비중 : 상장 주식수}
 *이슈 : FOREIGN KEY 추가시 문법 오류 뜨기때문에, 한시적인 테이블임*
 
@@ -234,8 +222,6 @@ ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES;
 ```
-#샘플 데이터 확인
-SELECT stock_code as '코드', stock_name as '이름', price_highest as '고가', foreigner_hold_stocks as '외국보유수' FROM tb_20190709_00095;
 
 #1차 과제
 (1) 기본 종목 정보 : excel -> insert 코드 짤 것
