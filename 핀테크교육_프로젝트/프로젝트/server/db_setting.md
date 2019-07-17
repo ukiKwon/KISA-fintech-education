@@ -5,8 +5,7 @@
     pwd : kisemble
 
 #Table 세팅
->> 테이블 Ref
-
+1. 등락률 요약 테이블
 >> 테이블 단축 (등락률)
 
 CREATE TABLE tb_summary_20190709_00095 (
@@ -50,9 +49,10 @@ CREATE TABLE tb_summary_20190715_00099 (
     ON UPDATE CASCADE
 );
 
+
 >> tb_20190709_00095
 
-CREATE TABLE tb_20190709_00095 (
+<!-- CREATE TABLE tb_20190709_00095 (
     prior_index SMALLINT,
     stock_code CHAR(6),
     stock_name VARCHAR(50),
@@ -69,10 +69,9 @@ CREATE TABLE tb_20190709_00095 (
     foreigner_hold_stocks BIGINT,
     foreigner_hold_rate FLOAT,
     num_of_stock SMALLINT
-);
-
+); -->
+2.
 #주식데이터
-#Range_partitioning
 #Data 건수
 (1) 샘플식 예제
 6(총 장시간) x 6(10분주기) x 2000(종목수) = 72,000 * 30 (한달) = 216,000
@@ -107,7 +106,7 @@ CREATE TABLE tb_stock_list (
 
 ```
 CREATE TABLE tb_stock_category (
-    stock_category CHAR(6),
+    stock_category SMALINT AUTO_INCREMENT,
     stock_code CHAR(6),
     PRIMARY KEY(stock_category),
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)

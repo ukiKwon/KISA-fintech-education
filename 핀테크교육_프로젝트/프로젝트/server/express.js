@@ -29,7 +29,10 @@ app.use(cors());
 app.get('/', function (req, res) {
     res.render('index')
 })
-//2-4. 화면-메인
+//2-2. 셀리니움 결과
+app.get('/report', function(req, res) {
+    res.render('report')
+})
 
 /*
   *
@@ -44,7 +47,7 @@ app.post('/gettimely', function(req, res) {
     var mstock = req.body.stock_code;
     var current_table = new String("");
     var mname = "";
-    var mday = req.body.reg_date;
+    var mday = req.body.reg_시date;
     console.log(mstock, mday);
     //해당날짜 테이블 선택
     const mTarget_table = new String("tb_summary");
