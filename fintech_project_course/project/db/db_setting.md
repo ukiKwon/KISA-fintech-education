@@ -95,28 +95,37 @@ CREATE TABLE tb_stock_list (
     PRIMARY KEY(stock_code)
 );
 ```
-@3. 업종별 주식 분류
+@3. 주식 업종 분류
+```
+CREATE TABLE tb_category_list (
+  category_code CHAR(6),
+  category_name VARCHAR(100),
+  PRIMARY KEY(category_code),
+);
+```
+@4. 업종별 주식 분류
 ```
 CREATE TABLE tb_stock_category (
-    category_code SMALINT,
+    category_code CHAR(6),
     stock_code CHAR(6),
-    PRIMARY KEY(stock_category),
+    FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
     FOREIGN KEY(stock_code) REFERENCES tb_stock_list(stock_code)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 ```
-@4. 업종별 종목 코드
 @00. 업종별 등락율 테이블
 {종목 : 등락률}
 ```
-CREATE TABLE tb_today_stock_info_by_category (
-  stock_category CHAR(6),
-  stock_falling_rate INTEGER DEFAULT '0',
-  FOREIGN KEY(stock_category) REFERENCES tb_stock_category(stock_category)
-  ON DELETE CASCADECURDATE()
+CREATE TABLE tb_fr_category_20190709 (
+  category_code CHAR(6),
+  category_falling_rate FLOAT DEFAULT '0',
+  FOREIGN KEY(category_code) REFERENCES tb_category_list(category_code)
+  ON DELETE CASCADE
   ON UPDATE CASCADE
-  );  
+);  
 ```
 
 @00. 전체 종목별 정보 : Ideal 형태  

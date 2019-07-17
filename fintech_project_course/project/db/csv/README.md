@@ -9,11 +9,13 @@
   - {업종코드 || 종목코드}
 
 #fr_category.tar
-  (1) fr_category_[날짜].csv   
+  (1) fr_category_[날짜].csv
+  - {업종명 || 등락률}   
   - 업종별 등락률 데이터 with 공백값 존재   
 
-  (2) fall_rate_by_category_20190709.csv   
-  - 업종별 등락률 데이터 with 공백값 제거
+  (2) fall_rate_by_category_[날짜].csv   
+  - {업종코드 || 등락률}   
+  - 업종별 등락률 데이터 with 공백값 제거 && 코드화   
 
 #stock_list.tar
   (1) 날짜_인덱스.csv   

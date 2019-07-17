@@ -1,10 +1,3 @@
-#include <iostream>
-
-using namespace std;
-typedef pair <string, string> pair_str;
-typedef vector <pair_str> vector_pair_str;
-typedef vector <string> vector_str;
-
 pair <string, string> explitStrPair(string _input)
 {
     string l, r;

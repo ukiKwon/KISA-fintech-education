@@ -15,4 +15,10 @@
   - '업종명 || 종목명'.csv를 읽어들여서 중복제거하고 '업종코드 || 업종명'.csv 생성   
   - return : category_list.md   
 
+5. convert.cpp   
+  - convert.hpp : 이름을 지정된 코드로 변환   
+
+6. config.hpp
+  - 공통적으로 사용되는 변수명 정의   
+  
 #작성자 : uki408
