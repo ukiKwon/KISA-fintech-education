@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
   host     : '127.0.0.1',
   user     : 'root',
   password : 'kisemble',
-  database : 'KISEMBLE'
+  database : 'kisemble'
 });
 connection.connect();
 var curday_stock_daily = "";
@@ -40,7 +40,6 @@ app.get('/', function (req, res) {
 //3-2. 당일 데이터 호출
 app.post('/gettimely', function(req, res) {
     //test
-    console.log(req.body);
     //POST - 데이터 세트 정의
     var mstock = req.body.stock_code;
     var current_table = new String("");
@@ -63,7 +62,7 @@ app.post('/gettimely', function(req, res) {
                  else {
                      //has-the-name
                      for (i = results.length - 1; i > 0; --i) {
-                  			var mt = results[i].Tables_in_KISEMBLE;
+                  			var mt = results[i].Tables_in_kisemble;
                         if (mt.indexOf(mTarget_table) != -1) {
 			                      console.log(">> get table");
                             current_table = mt;
