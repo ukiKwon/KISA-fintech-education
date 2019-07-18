@@ -136,13 +136,15 @@ app.post('/getStockCategoryAll', function(req, res) {
                           return res.json(10011);
                       }
                       else {
+
                           var aJsonArray = new Array();
                           for (i = 0; i < results.length; ++i) {
+                              int counter = 0;
                               var aJson = new Object();
                               aJson.category_code = results[i].category_code;
                               aJson.category_name = results[i].category_name;
                               aJson.category_rate = results[i].category_falling_rate;
-		  	      aJson.stock_list = new Array();
+		  	                      aJson.stock_list = new Array();
                               /*
                               * {[종목명 : 종목등락률],}
                               SELECT B.stock_code, B.stock_falling_rate
@@ -154,29 +156,34 @@ app.post('/getStockCategoryAll', function(req, res) {
                               WHERE A.stock_code = B.stock_code;
                               */
                               //var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
-				var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
-                                      var aJsonStocksArray = new Array();
+				                      var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
+                              var aJsonStocksArray = new Array();
+                              console.log(" >> load stocks_list....now");
                               connection.query(sql_stock_list, [results[i].category_code], function(error, stocks) {
                                   if (error) {
                                       console.log(" >> search the dated table...mysql failed");
                                       return res.json(10011);
                                   }
                                   else {
-					console.log(" >> load stocks_list....now");
                                       for (j = 0; j < stocks.length; ++j) {
                                           var bJson = new Object();
                                           bJson.stock_code = stocks[j].stock_code;
                                           bJson.stock_falling_rate = stocks[j].stock_falling_rate;
                                           aJsonStocksArray.push(bJson);
-					//console.log(aJsonStocksArray);
-					//aJson.stock_list.push(bJson);
-					aJson.stock_list = aJsonStocksArray;
-                              //aJsonArray.push(aJson);
+                                					//console.log(aJsonStocksArray);
+                                					//aJson.stock_list.push(bJson);
+                                					aJson.stock_list = aJsonStocksArray;
+                                          //aJsonArray.push(aJson);
+                                          counter++;
+                                          if (counter >= stocks.length) {
+                                              aJsonArray.push(aJson);
+                                          }
                                       }
                                   }
                               })
+                              //
                               //aJsonStocksArray : {[종목명 : 종목등락률],}
-                              aJsonArray.push(aJson);
+                              //aJsonArray.push(aJson);
                           }
       	                  console.log("  >> request success !!!");
                           res.json(aJsonArray);
