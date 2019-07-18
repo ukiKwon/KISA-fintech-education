@@ -142,6 +142,7 @@ app.post('/getStockCategoryAll', function(req, res) {
                               aJson.category_code = results[i].category_code;
                               aJson.category_name = results[i].category_name;
                               aJson.category_rate = results[i].category_falling_rate;
+		  	      aJson.stock_list = new Array();
                               /*
                               * {[종목명 : 종목등락률],}
                               SELECT B.stock_code, B.stock_falling_rate
@@ -152,25 +153,30 @@ app.post('/getStockCategoryAll', function(req, res) {
                                     ) as A, tb_summary_20190715_00099 as B
                               WHERE A.stock_code = B.stock_code;
                               */
-                              var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
+                              //var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
+				var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
+                                      var aJsonStocksArray = new Array();
                               connection.query(sql_stock_list, [results[i].category_code], function(error, stocks) {
                                   if (error) {
                                       console.log(" >> search the dated table...mysql failed");
                                       return res.json(10011);
                                   }
                                   else {
-                                      var aJsonStocksArray = new Array();
+					console.log(" >> load stocks_list....now");
                                       for (j = 0; j < stocks.length; ++j) {
                                           var bJson = new Object();
-                                          bJson.stock_code = stocks[i].stock_code;
-                                          bJson.stock_falling_rate = stock[i].stock_falling_rate;
+                                          bJson.stock_code = stocks[j].stock_code;
+                                          bJson.stock_falling_rate = stocks[j].stock_falling_rate;
                                           aJsonStocksArray.push(bJson);
+					//console.log(aJsonStocksArray);
+					//aJson.stock_list.push(bJson);
+					aJson.stock_list = aJsonStocksArray;
+                              //aJsonArray.push(aJson);
                                       }
                                   }
                               })
                               //aJsonStocksArray : {[종목명 : 종목등락률],}
                               aJsonArray.push(aJson);
-                              aJsonArray.push(aJsonStocksArray);
                           }
       	                  console.log("  >> request success !!!");
                           res.json(aJsonArray);
