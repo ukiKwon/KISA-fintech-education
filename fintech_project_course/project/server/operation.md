@@ -13,7 +13,7 @@
       ...
     }
   - 업종 클릭시 해당 종목 데이터 다 넘겨주기
-    getStockListById/category_id=?()
+    getStockListById/category_id=?(v)
     {
         {
             id :

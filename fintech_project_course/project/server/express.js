@@ -225,6 +225,46 @@ app.post('/getStockListById', function(req, res) {
     })
 
 })
+//3-3. 한 종목 5일치 데이터 전송
+app.post('/getStockDataById', function(req, res) {
+    var stock_code = req.body.stock_id;
+    console.log(">> getStockDataById called...");
+    console.log(" >> category :" + stock_code);
+    const mTarget_table = new String("tb_summary");
+    var sql_find_table = 'SHOW TABLES;';
+    connection.query(sql_find_table, function (error, results) {
+        if (error) {
+            console.log(" >> search the dated table...mysql failed");
+            return res.json(10011);
+        }
+        else {
+            //1. 현재 날짜 테이블 호출
+            for (i = 0; i < results.length; ++i) {
+               var mt = results[i].Tables_in_kisemble;
+               if (mt.indexOf(mTarget_table) != -1) {
+                   console.log(" >> found the dated table found : " + mt);
+                   //2. 특정 항목 조회
+                   /*
+                   //특정항목 조회
+                   * SELECT A.stock_falling_rate FROM tb_summary_20190709_00095 as A WHERE A.stock_code = '5930';'(v)
+                   */
+                   var aJsonArray = new Array();
+                   var sql_get_stock = 'SELECT A.`stock_falling_rate` FROM ' + mt + ' as A WHERE A.`stock_code` = ?;'
+                   connection.query(sql_get_stock, [stock_code], function (error, data) {
+                       for (i = 0; i < results.length; ++i) {
+                         var aJson = new Object();
+                         aJson.prior_index = data[i].prior_index;
+                         aJson.stock_falling_rate = data[i].stock_falling_rate;
+                         aJsonArray.push(aJson);
+                       }
+                       console.log("  >> request success !!!");
+                       return res.json(JSON.stringify(aJsonArray));
+                   })
+               }
+            }
+        }
+    })
+})
 //3.$. 서버처리-대기
 app.listen(5555);
 console.log("Listening on port", port);
