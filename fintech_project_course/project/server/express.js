@@ -155,7 +155,7 @@ app.post('/getStockCategoryAll', function (req, res) {
                             FROM (
                                   SELECT C.stock_code
                                   FROM tb_stock_category as C
-                                  WHERE C.category_code = 4
+                                  WHERE C.category_code = 71
                                   ) as A, tb_summary_20190715_00099 as B
                             WHERE A.stock_code = B.stock_code;
                             */
