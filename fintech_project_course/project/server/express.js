@@ -110,7 +110,7 @@ app.post('/getStockCategoryAll', function (req, res) {
     var sql_find_table = 'SHOW TABLES;';
     connection.query(sql_find_table, function (error, results) {
         if (error) {
-            console.log(" >> search the dated table...mysql failed");
+            console.log(" >> (mysql_failed) no result of query was found...");
             return res.json(10011);
         }
         else {
@@ -135,10 +135,11 @@ app.post('/getStockCategoryAll', function (req, res) {
                 var sql_select_all = 'SELECT `tb_category_list`.`category_code`, `tb_category_list`.`category_name`,' + 'tb_fr_category_20190715' + '.`category_falling_rate` FROM `tb_category_list`,' + 'tb_fr_category_20190715' + ' WHERE `tb_category_list`.`category_code` = ' + 'tb_fr_category_20190715' + '.`category_code`;';
                 connection.query(sql_select_all, function (error, results) {
                     if (error) {
-                        console.log(" >> search the dated table...mysql failed");
+                        console.log(" >> (mysql_failed) no result of query was found...");
                         return res.json(10011);
                     }
                     else {
+                        console.log("  >> load stocks_list....now");
                         let aJsonArray = [];
                         var counter = 0;
                         for (i = 0; i < results.length; ++i) {
@@ -160,14 +161,12 @@ app.post('/getStockCategoryAll', function (req, res) {
                             */
                             var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
                             let bJsonStocksArray = [];
-                            console.log(" >> load stocks_list....now");
                             connection.query(sql_stock_list, [results[i].category_code], function (error, stocks) {
                                 if (error) {
                                     console.log(" >> search the dated table...mysql failed");
                                     return res.json(10011);
                                 }
                                 else {
-                                    //console.log(stocks);
                                     for (j = 0; j < stocks.length; ++j) {
                                         let bJson = {};
                                         bJson.stock_code = stocks[j].stock_code;
@@ -179,13 +178,12 @@ app.post('/getStockCategoryAll', function (req, res) {
                                     if (counter == results.length - 1) {
                                         res.json(aJsonArray);
                                     }
-                                    else {
+                                    else { //waiting from loading db
                                         counter++;
                                     }
 
                                 }
                             });
-                            //console.log("counter : ", counter);
                         }
                     }
                 })
