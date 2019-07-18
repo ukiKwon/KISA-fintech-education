@@ -238,6 +238,7 @@ app.post('/getStockDataById', function(req, res) {
             return res.json(10011);
         }
         else {
+                   var aJsonArray = new Array();
             //1. 현재 날짜 테이블 호출
             for (i = 0; i < results.length; ++i) {
                var mt = results[i].Tables_in_kisemble;
@@ -248,17 +249,20 @@ app.post('/getStockDataById', function(req, res) {
                    //특정항목 조회
                    * SELECT A.stock_falling_rate FROM tb_summary_20190709_00095 as A WHERE A.stock_code = '5930';'(v)
                    */
-                   var aJsonArray = new Array();
-                   var sql_get_stock = 'SELECT A.`stock_falling_rate` FROM ' + mt + ' as A WHERE A.`stock_code` = ?;'
+                   var sql_get_stock = 'SELECT A.`stock_falling_rate` FROM ' + mt + ' as A WHERE A.`stock_code` = ?;';
                    connection.query(sql_get_stock, [stock_code], function (error, data) {
-                       for (i = 0; i < results.length; ++i) {
-                         var aJson = new Object();
-                         aJson.prior_index = data[i].prior_index;
-                         aJson.stock_falling_rate = data[i].stock_falling_rate;
-                         aJsonArray.push(aJson);
-                       }
-                       console.log("  >> request success !!!");
-                       return res.json(JSON.stringify(aJsonArray));
+		       if (error) {
+            			console.log(" >> search the dated table...mysql failed");
+            			return res.json(10011);
+			}
+			else {
+                       	  var aJson = new Object();
+                       	  aJson.prior_index = data[0].prior_index;
+                       	  aJson.stock_falling_rate = data[0].stock_falling_rate;
+                       	  aJsonArray.push(aJson);
+                       		console.log("  >> request success !!!");
+                       		return res.json(JSON.stringify(aJsonArray));
+			}
                    })
                }
             }
