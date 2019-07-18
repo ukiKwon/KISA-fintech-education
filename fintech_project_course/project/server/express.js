@@ -21,7 +21,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 //ejs
-app.set('views', __dirna*me + '/views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
@@ -139,6 +139,7 @@ app.post('/getStockCategoryAll', function(req, res) {
                       else {
                           var aJsonArray = new Array();
                           var counter = 0;
+console.log(results);
                           for (i = 0; i < results.length; ++i) {
 				                      console.log("0 >");
                               var aJson = {};
@@ -159,24 +160,25 @@ app.post('/getStockCategoryAll', function(req, res) {
 				                      var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
                               var bJsonStocksArray = [];
                               //console.log(" >> load stocks_list....now");
-                              getStockInfo( , results[i].category_code);
                               connection.query(sql_stock_list, [results[i].category_code], function(error, stocks) {
-				                          console.log("1 >");
                                   if (error) {
                                       console.log(" >> search the dated table...mysql failed");
                                       return res.json(10011);
                                   }
                                   else {
-                                      for (j = 0; j < stocks.length; ++j) {
+                                      console.log(stocks);
+							for (j = 0; j < stocks.length; ++j) {
                                           var bJson = new Object();
                                           bJson.stock_code = stocks[j].stock_code;
                                           bJson.stock_falling_rate = stocks[j].stock_falling_rate;
                                           bJsonStocksArray.push(bJson);
                                       }
+aJson.list = bJsonStocksArray;
                                   }
                               })
                               if(counter == results.length-1){
-                                 res.json(aJsonArray);
+console.error(aJsonArray) ;                               
+ res.json(aJsonArray);
                               }
                               else {
                                 counter ++;
@@ -308,59 +310,6 @@ app.post('/getStockDataById', function(req, res) {
 /*
   * function
 */
-function getStockInfo(_target_table, _category_code)
-{
-    var bJsonStocksArray = new Array();
-    var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = '+ _category_code +') as A, ' + _target_table + ' as B WHERE A.`stock_code` = B.`stock_code`;';
-    connection.query(sql_stock_list, [_category_code], function(error, stocks) {
-        console.log("1 >");
-        if (error) {
-            console.log(" >> search the dated table...mysql failed");
-            return res.json(10011);
-        }
-        else {
-            for (j = 0; j < stocks.length; ++j) {
-                console.log(".");
-                var bJson = new Object();
-                bJson.stock_code = stocks[j].stock_code;
-                bJson.stock_falling_rate = stocks[j].stock_falling_rate;
-                bJsonStocksArray.push(bJson);
-            }
-        }
-    })
-}
-var asyncfunction1 = function(param){
-      return new Promise(function(fullfilled,rejected){
-           setTimeout(
-                 function(){
-                   var sql_select_all = 'SELECT `tb_category_list`.`category_code`, `tb_category_list`.`category_name`,' +  current_table + '.`category_falling_rate` FROM `tb_category_list`,' + current_table + ' WHERE `tb_category_list`.`category_code` = ' + current_table + '.`category_code`;';
-                   connection.query(sql_select_all, function (error, results) {
-                       if (error) {
-                          console.log(" >> search the dated table...mysql failed");
-                           return res.json(10011);
-                       }
-                       else {
-                       }
-                 },1000);
-      });
-}
-var asyncfunction2 = function(param){
-      return new Promise(function(fullfilled,rejected){
-           setTimeout(
-                 function(){
-                       fullfilled('result 2:'+param);
-                 },1000);
-      });
-}
-
-var asyncfunction3 = function(param){
-      return new Promise(function(fullfilled,rejected){
-           setTimeout(
-                 function(){
-                       fullfilled('result 3:'+param);
-                 },1000);
-      });
-}
 
 app.listen(5555);
 console.log("Listening on port", port);
