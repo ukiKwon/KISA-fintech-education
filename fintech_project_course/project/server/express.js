@@ -140,7 +140,7 @@ app.post('/getStockCategoryAll', function(req, res) {
                           var aJsonArray = new Array();
                           for (i = 0; i < results.length; ++i) {
                               var aJson = new Object();
-                              aJson.category_code = results[0].stock_daybefore;
+                              aJson.category_code = results[i].stock_daybefore;
                               aJson.category_name = results[i].category_name;
                               aJson.category_rate = results[i].category_falling_rate;
                               aJsonArray.push(aJson);
@@ -160,7 +160,70 @@ app.post('/getStockCategoryAll', function(req, res) {
 });
 //3-2. 업종당 주식 종목 등락률 반환
 app.post('/getStockListById', function(req, res) {
-    
+    var category_code = req.body.category_id;
+    console.log(">> getStockListById called...");
+    console.log(" >> category :" + category_code);
+    const mTarget_table = new String("tb_summary");
+    var sql_find_table = 'SHOW TABLES;';
+    connection.query(sql_find_table, function (error, results) {
+        if (error) {
+            console.log(" >> search the dated table...mysql failed");
+            return res.json(10011);
+        }
+        else {
+            //1. 현재 날짜 테이블 호출
+            for (i = results.length - 1; i > 0; --i) {
+               var mt = results[i].Tables_in_kisemble;
+               if (mt.indexOf(mTarget_table) != -1) {
+                   current_table = mt;
+                   console.log(" >> found the dated table found : " + current_table);
+                   break;
+               }
+            }
+            //2. 업종 코드에 해당하는 주식 종목수 및 해당 주식수의 등락률 검색
+            if (current_table != "") {
+                /*
+                //{주식코드 : 주식명 : 등락률}
+                * SELECT A.stock_code, A.stock_name, B.stock_falling_rate
+                FROM (
+                  SELECT C.stock_code, D.stock_name
+                  FROM (
+                    SELECT * FROM tb_stock_category
+                    WHERE tb_stock_category.category_code='4'
+                  ) as C,
+                  tb_stock_list as D
+                  WHERE C.stock_code = D.stock_code
+                ) as A,
+                tb_summary_20190715_00099 as B
+                WHERE A.stock_code = B.stock_code;(v)
+                */
+                var sql_stocks_list = 'SELECT A.`stock_code`, A.`stock_name`, B.`stock_falling_rate` FROM (SELECT C.`stock_code`, D.`stock_name` FROM (SELECT * FROM `tb_stock_category` WHERE `tb_stock_category`.`category_code`= ?) as C, `tb_stock_list` as D WHERE C.`stock_code` = D.`stock_code`) as A,'+ current_table + ' as B WHERE A.`stock_code` = B.`stock_code`;';
+                connection.query(sql_stocks_list, [category_code], function(error, results) {
+                    if (error) {
+                        console.log(" >> search the dated table...mysql failed");
+                        return res.json(10011);
+                    }
+                    else {
+                        var aJsonArray = new Array();
+                        for (i = 0; i < results.length; ++i) {
+                            var aJson = new Object();
+                            aJson.stock_code = results[i].stock_code;
+                            aJson.stock_name = results[i].stock_name;
+                            aJson.stock_falling_rate = results[i].stock_falling_rate;
+                            aJsonArray.push(aJson);
+                        }
+                        console.log("  >> request success !!!");
+                        return res.json(JSON.stringify(aJsonArray));
+                    }
+                })
+            }
+            else {
+                console.log(" >> no table has been found");
+                return res.json(10002);
+            }
+        }
+    })
+
 })
 //3.$. 서버처리-대기
 app.listen(5555);
