@@ -17,4 +17,4 @@ start-chrome-headless() {
 # Start
 # start-chrome
 # start-chrome-debug
-# start-chrome-headless
+ start-chrome-headless
