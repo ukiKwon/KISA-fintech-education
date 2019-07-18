@@ -106,7 +106,6 @@ app.post('/getStockCategoryAll', function (req, res) {
     //해당날짜 테이블 선택
     console.log("\n>> getStockCategoryAll() called");
     const mTarget_table = new String("fr_category");
-    var current_table = new String("fr_category");
     var sql_find_table = 'SHOW TABLES;';
     connection.query(sql_find_table, function (error, results) {
         if (error) {
@@ -139,7 +138,8 @@ app.post('/getStockCategoryAll', function (req, res) {
                         return res.json(10011);
                     }
                     else {
-                        console.log("  >> load stocks_list....now");
+                        console.log("  >> " + results.length + " categories found");
+                        console.log("  >> load its stocks_list....now");
                         let aJsonArray = [];
                         var counter = 0;
                         for (i = 0; i < results.length; ++i) {
@@ -149,7 +149,6 @@ app.post('/getStockCategoryAll', function (req, res) {
                             aJson.category_rate = results[i].category_falling_rate;
                             aJson.stock_list = [];
                             /*
-
                             * {[종목명 : 종목등락률],}
                             SELECT B.stock_code, B.stock_falling_rate
                             FROM (
@@ -181,7 +180,6 @@ app.post('/getStockCategoryAll', function (req, res) {
                                     else { //waiting from loading db
                                         counter++;
                                     }
-
                                 }
                             });
                         }
