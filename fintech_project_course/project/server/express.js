@@ -75,7 +75,7 @@ app.post('/gettimely', function(req, res) {
                      //3. 등락률 조회
                      if (current_table != "") {
                           console.log(" >> user searched valid stocks");
-                          var sql_select_table = 'SELECT stock_daybefore FROM ' + current_table + ' WHERE stock_code=?;';
+                          var sql_select_table = 'SELECT stock_falling_rate FROM ' + current_table + ' WHERE stock_code=?;';
                           connection.query(sql_select_table, [mstock], function (error, results) {
                               if (error) { throw error;}
                               else { //found the stock_data
@@ -107,6 +107,7 @@ app.post('/getStockCategoryAll', function(req, res) {
     connection.query(sql_find_table, function (error, results) {
         if (error) {
             // throw error;
+	    console.log(" >> search the dated table...mysql failed");
             return res.json(10011);
         }
         else {
@@ -115,7 +116,7 @@ app.post('/getStockCategoryAll', function(req, res) {
                var mt = results[i].Tables_in_kisemble;
                if (mt.indexOf(mTarget_table) != -1) {
                    current_table = mt;
-                   console.log(" >> found : " + current_table);
+                   console.log(" >> found the dated table found : " + current_table);
                    break;
                }
             }
@@ -127,10 +128,12 @@ app.post('/getStockCategoryAll', function(req, res) {
                 FROM tb_category_list, tb_fr_category_20190715
                 WHERE tb_category_list.category_code = tb_fr_category_20190715.category_code
             */
-            var sql_select_all = 'SELECT `kisemble`.`tb_category_list`.`category_code`, `kisemble`.`tb_category_list`.`category_name`,`kisemble`.?.`category_falling_rate` FROM `tb_category_list`, ? WHERE `tb_category_list`.`category_code`=?.`category_code`;';
-            connection.query(sql_select_all, [current_table, current_table, current_table]fuction (error, results) {
+	    if (current_table != "") {
+	    var sql_select_all = 'SELECT `tb_category_list`.`category_code`, `tb_category_list`.`category_name`,' +  current_table + '.`category_falling_rate` FROM `tb_category_list`,' + current_table + ' WHERE `tb_category_list`.`category_code` = ' + current_table + '.`category_code`;';
+            connection.query(sql_select_all, function (error, results) {
                 if (error) {
                     // throw error;
+	    	    console.log(" >> search the dated table...mysql failed");
                     return res.json(10011);
                 }
                 else {
@@ -142,9 +145,16 @@ app.post('/getStockCategoryAll', function(req, res) {
                         aJson.category_rate = results[i].category_falling_rate;
                         aJsonArray.push(aJson);
                     }
+		    console.log("  >> request success !!!");
                     return res.json(JSON.stringify(aJsonArray));
                 }
             })
+	} else {
+		console.log(" >> no table has been found");
+		return res.json(10002);
+	}
+	
+	}
     })
 
 });
