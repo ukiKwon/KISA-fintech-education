@@ -128,37 +128,40 @@ app.post('/getStockCategoryAll', function(req, res) {
                 FROM tb_category_list, tb_fr_category_20190715
                 WHERE tb_category_list.category_code = tb_fr_category_20190715.category_code
             */
-	    if (current_table != "") {
-	    var sql_select_all = 'SELECT `tb_category_list`.`category_code`, `tb_category_list`.`category_name`,' +  current_table + '.`category_falling_rate` FROM `tb_category_list`,' + current_table + ' WHERE `tb_category_list`.`category_code` = ' + current_table + '.`category_code`;';
-            connection.query(sql_select_all, function (error, results) {
-                if (error) {
-                    // throw error;
-	    	    console.log(" >> search the dated table...mysql failed");
-                    return res.json(10011);
-                }
-                else {
-                    var aJsonArray = new Array();
-                    for (i = 0; i < results.length; ++i) {
-                        var aJson = new Object();
-                        aJson.category_code = results[0].stock_daybefore;
-                        aJson.category_name = results[i].category_name;
-                        aJson.category_rate = results[i].category_falling_rate;
-                        aJsonArray.push(aJson);
-                    }
-		    console.log("  >> request success !!!");
-                    return res.json(JSON.stringify(aJsonArray));
-                }
-            })
-	} else {
-		console.log(" >> no table has been found");
-		return res.json(10002);
-	}
-	
-	}
-    })
+      	    if (current_table != "") {
+                  var sql_select_all = 'SELECT `tb_category_list`.`category_code`, `tb_category_list`.`category_name`,' +  current_table + '.`category_falling_rate` FROM `tb_category_list`,' + current_table + ' WHERE `tb_category_list`.`category_code` = ' + current_table + '.`category_code`;';
+                  connection.query(sql_select_all, function (error, results) {
+                      if (error) {
+                          // throw error;
+          	              console.log(" >> search the dated table...mysql failed");
+                          return res.json(10011);
+                      }
+                      else {
+                          var aJsonArray = new Array();
+                          for (i = 0; i < results.length; ++i) {
+                              var aJson = new Object();
+                              aJson.category_code = results[0].stock_daybefore;
+                              aJson.category_name = results[i].category_name;
+                              aJson.category_rate = results[i].category_falling_rate;
+                              aJsonArray.push(aJson);
+                          }
+      	                  console.log("  >> request success !!!");
+                          return res.json(JSON.stringify(aJsonArray));
+                      }
+                  })
+           }
+           else {
+      		     console.log(" >> no table has been found");
+      	       return res.json(10002);
+           }
 
+      }
+    })
 });
 //3-2. 업종당 주식 종목 등락률 반환
+app.post('/getStockListById', function(req, res) {
+    
+})
 //3.$. 서버처리-대기
 app.listen(5555);
 console.log("Listening on port", port);
