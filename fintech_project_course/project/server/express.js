@@ -197,7 +197,7 @@ app.post('/getStockCategoryAll', function (req, res) {
 //3-2. 업종당 주식 종목 등락률 반환
 app.post('/getStockListById', function (req, res) {
     var category_code = req.body.category_id;
-    console.log(">> getStockListById called...");
+    console.log("\n>> getStockListById called...");
     console.log(" >> category :" + category_code);
     const mTarget_table = new String("tb_summary");
     var sql_find_table = 'SHOW TABLES;';
@@ -249,7 +249,7 @@ app.post('/getStockListById', function (req, res) {
                             aJsonArray.push(aJson);
                         }
                         console.log("  >> request success !!!");
-                        return res.json(JSON.stringify(aJsonArray));
+                        res.json(aJsonArray);
                     }
                 })
             }
