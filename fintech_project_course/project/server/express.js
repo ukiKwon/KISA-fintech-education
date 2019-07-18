@@ -132,7 +132,6 @@ app.post('/getStockCategoryAll', function(req, res) {
                   var sql_select_all = 'SELECT `tb_category_list`.`category_code`, `tb_category_list`.`category_name`,' +  current_table + '.`category_falling_rate` FROM `tb_category_list`,' + current_table + ' WHERE `tb_category_list`.`category_code` = ' + current_table + '.`category_code`;';
                   connection.query(sql_select_all, function (error, results) {
                       if (error) {
-                          // throw error;
           	              console.log(" >> search the dated table...mysql failed");
                           return res.json(10011);
                       }
@@ -140,13 +139,41 @@ app.post('/getStockCategoryAll', function(req, res) {
                           var aJsonArray = new Array();
                           for (i = 0; i < results.length; ++i) {
                               var aJson = new Object();
-                              aJson.category_code = results[i].stock_daybefore;
+                              aJson.category_code = results[i].category_code;
                               aJson.category_name = results[i].category_name;
                               aJson.category_rate = results[i].category_falling_rate;
+                              /*
+                              * {[종목명 : 종목등락률],}
+                              SELECT B.stock_code, B.stock_falling_rate
+                              FROM (
+                                    SELECT C.stock_code
+                                    FROM tb_stock_category as C
+                                    WHERE C.category_code = 4
+                                    ) as A, tb_summary_20190715_00099 as B
+                              WHERE A.stock_code = B.stock_code;
+                              */
+                              var sql_stock_list = 'SELECT B.`stock_code`, B.`stock_falling_rate` FROM (SELECT C.`stock_code` FROM `tb_stock_category` as C WHERE C.`category_code` = ?) as A, `tb_summary_20190715_00099` as B WHERE A.`stock_code` = B.`stock_code`;';
+                              connection.query(sql_stock_list, [results[i].category_code], function(error, stocks) {
+                                  if (error) {
+                                      console.log(" >> search the dated table...mysql failed");
+                                      return res.json(10011);
+                                  }
+                                  else {
+                                      var aJsonStocksArray = new Array();
+                                      for (j = 0; j < stocks.length; ++j) {
+                                          var bJson = new Object();
+                                          bJson.stock_code = stocks[i].stock_code;
+                                          bJson.stock_falling_rate = stock[i].stock_falling_rate;
+                                          aJsonStocksArray.push(bJson);
+                                      }
+                                  }
+                              })
+                              //aJsonStocksArray : {[종목명 : 종목등락률],}
                               aJsonArray.push(aJson);
+                              aJsonArray.push(aJsonStocksArray);
                           }
       	                  console.log("  >> request success !!!");
-                          return res.json(JSON.stringify(aJsonArray));
+                          res.json(aJsonArray);
                       }
                   })
            }
@@ -261,7 +288,7 @@ app.post('/getStockDataById', function(req, res) {
                        	  aJson.stock_falling_rate = data[0].stock_falling_rate;
                        	  aJsonArray.push(aJson);
                        		console.log("  >> request success !!!");
-                       		return res.json(JSON.stringify(aJsonArray));
+                       		return res.json(aJsonArray);
 			}
                    })
                }

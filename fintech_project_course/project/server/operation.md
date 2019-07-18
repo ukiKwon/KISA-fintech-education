@@ -29,7 +29,10 @@
             rate : { "", "", "", "", ""}
         }
     }
-(3) 실시간 데이터 with selenium-standalone   
+(3) getStockCategoryAll() 업데이트
+  - [{업종명 : [ {종목 주식 : 종목 등락률}, ] : 업종 등락률}, ]
+
+(4) 실시간 데이터 with selenium-standalone   
   - krx 페이지에서 5분 간격으로 csv 파일 다운로드 하는 daemon   
   - 당일 데이터를 테이블에 집어넣는 daemon   
 
