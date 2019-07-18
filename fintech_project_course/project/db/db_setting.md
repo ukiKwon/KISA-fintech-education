@@ -1,7 +1,7 @@
-#update : 2019. 07. 16
+#update : 2019. 07. 18
 #DB configuration  
   - aws 세팅
-  - database : KISEMBLE
+  - database : kisemble
     pwd : kisemble
 
 #주식데이터
@@ -289,15 +289,33 @@ LINES TERMINATED BY '\n';
 5. 업종별 등락률
 {업종코드 : 등락률}
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/fr_category/stock_by_category_on_code.csv'
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190709.csv'
 INTO TABLE tb_fr_category_20190709
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n';
-```
 
-#1차 과제
-(1) 기본 종목 정보 : excel -> insert 코드 짤 것
-INSERT INTO tb_stock_info (stock_code, stock_category, stock_name) VALUE ();
-(2) 업종별 일부 정보 : 네이버 주식 크롤링 -> 10분 주기 update 코드 .sh(데몬 서비스) 짤 것
-UPDATE tb_stock_by_category WHERE stock_category='$var_stock_category'
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190710.csv'
+INTO TABLE tb_fr_category_20190710
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190711.csv'
+INTO TABLE tb_fr_category_20190711
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190712.csv'
+INTO TABLE tb_fr_category_20190712
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190715.csv'
+INTO TABLE tb_fr_category_20190715
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n';
+```

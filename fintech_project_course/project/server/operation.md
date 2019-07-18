@@ -1,5 +1,37 @@
 #0718
+#샘플데이터 : 모든 데이터 완료
 #API
+(2) 함수 만들기   
+  - 업종별 등락률 데이터 넘겨주기   
+    getStockCategoryAll()/date=?
+    {
+      {
+        id :
+        name :
+        rate :
+      },
+      ...
+    }
+  - 업종 클릭시 해당 종목 데이터 다 넘겨주기
+    getStockListById/category_id=?()
+    {
+        {
+            id :
+            name :
+            rate :
+        }
+        ...
+    }
+  - 한 종목의 5일치 데이터 (임시)
+    getStockDataByOne()/stock_id=?()
+    {
+        {   
+            rate : { "", "", "", "", ""}
+        }
+    }
+(3) 실시간 데이터 with selenium-standalone   
+  - krx 페이지에서 5분 간격으로 csv 파일 다운로드 하는 daemon   
+  - 당일 데이터를 테이블에 집어넣는 daemon   
 
 #0717 ~ #0718
 # 만들 기능   
@@ -19,37 +51,6 @@
     tb_fr_category_20190712 (v)
     tb_fr_category_20190715 (v)
 
-  (2) 함수 만들기   
-    - 업종별 데이터 다 넘겨주기   
-      getStockCategoryAll()
-      {
-        {
-          id :
-          name :
-          rate :
-        },
-        ...
-      }
-    - 업종 클릭시 해당 종목 데이터 다 넘겨주기
-      getStockListById/category_id=?()
-      {
-          {
-              id :
-              name :
-              rate :
-          }
-          ...
-      }
-    - 한 종목의 5일치 데이터 (임시)
-      getStockDataByOne()/stock_id=?()
-      {
-          {   
-              rate : { "", "", "", "", ""}
-          }
-      }
-  (3) 실시간 데이터 with selenium-standalone   
-    - krx 페이지에서 5분 간격으로 csv 파일 다운로드 하는 daemon   
-    - 당일 데이터를 테이블에 집어넣는 daemon   
 #0716
 #참고사항   
 - 전일과 일부 항목이 같으면 안 올린다.   
@@ -58,3 +59,9 @@
 - daily, : 이전   
 - timely, : 오늘   
 - ref : 업종명   
+
+#1차 과제
+(1) 기본 종목 정보 : excel -> insert 코드 짤 것
+INSERT INTO tb_stock_info (stock_code, stock_category, stock_name) VALUE ();
+(2) 업종별 일부 정보 : 네이버 주식 크롤링 -> 10분 주기 update 코드 .sh(데몬 서비스) 짤 것
+UPDATE tb_stock_by_category WHERE stock_category='$var_stock_category'

@@ -40,7 +40,7 @@ app.get('/report', function(req, res) {
   *
 */
 
-//3-2. 당일 데이터 호출
+//3-1. 당일 데이터 호출
 app.post('/gettimely', function(req, res) {
     //test
     //POST - 데이터 세트 정의
@@ -96,6 +96,59 @@ app.post('/gettimely', function(req, res) {
          }
     })
 });
+//3-2. 업종별 등락률 반환
+app.post('/getStockCategoryAll', function(req, res) {
+    //1. 특정(마지막) 업종 등락 테이블 호출
+    //해당날짜 테이블 선택
+    console.log(">> getStockCategoryAll() called");
+    const mTarget_table = new String("fr_category");
+    var current_table = new String("");
+    var sql_find_table = 'SHOW TABLES;';
+    connection.query(sql_find_table, function (error, results) {
+        if (error) {
+            // throw error;
+            return res.json(10011);
+        }
+        else {
+            //has-the-name
+            for (i = results.length - 1; i > 0; --i) {
+               var mt = results[i].Tables_in_kisemble;
+               if (mt.indexOf(mTarget_table) != -1) {
+                   current_table = mt;
+                   console.log(" >> found : " + current_table);
+                   break;
+               }
+            }
+            //JOIN
+            /*
+              * This will be excuted.
+              * SELECT tb_category_list.category_code, tb_category_list.category_name,
+                      tb_fr_category_20190715.category_falling_rate
+                FROM tb_category_list, tb_fr_category_20190715
+                WHERE tb_category_list.category_code = tb_fr_category_20190715.category_code
+            */
+            var sql_select_all = 'SELECT `kisemble`.`tb_category_list`.`category_code`, `kisemble`.`tb_category_list`.`category_name`,`kisemble`.?.`category_falling_rate` FROM `tb_category_list`, ? WHERE `tb_category_list`.`category_code`=?.`category_code`;';
+            connection.query(sql_select_all, [current_table, current_table, current_table]fuction (error, results) {
+                if (error) {
+                    // throw error;
+                    return res.json(10011);
+                }
+                else {
+                    var aJsonArray = new Array();
+                    for (i = 0; i < results.length; ++i) {
+                        var aJson = new Object();
+                        aJson.category_code = results[0].stock_daybefore;
+                        aJson.category_name = results[i].category_name;
+                        aJson.category_rate = results[i].category_falling_rate;
+                        aJsonArray.push(aJson);
+                    }
+                    return res.json(JSON.stringify(aJsonArray));
+                }
+            })
+    })
+
+});
+//3-2. 업종당 주식 종목 등락률 반환
 //3.$. 서버처리-대기
 app.listen(5555);
 console.log("Listening on port", port);
