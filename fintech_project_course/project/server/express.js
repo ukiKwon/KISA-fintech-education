@@ -313,6 +313,10 @@ app.post('/getPriceById', function (req, res) {
     var stock_code = req.body.stock_code;
     const target_table = new String("tb_price");
     var sql_search_table = "SHOW TABLES;";
+<<<<<<< HEAD
+=======
+
+>>>>>>> 078b0ce31f0c761014d869c07752db7620449873
     connection.query(sql_search_table, function (error, results) {
         if (error) {
             console.log(" >> (mysql_failed) no result of query was found...");
@@ -321,7 +325,11 @@ app.post('/getPriceById', function (req, res) {
         else {
             //has-the-name
              let pricesArray = [];
+<<<<<<< HEAD
 	           var counter = 0;
+=======
+             var counter = 0;
+>>>>>>> 078b0ce31f0c761014d869c07752db7620449873
              for (i = results.length - 1; i > 0; --i) {
                  var mt = results[i].Tables_in_kisemble;
                  if (mt.indexOf(target_table) != -1) {
@@ -345,15 +353,15 @@ app.post('/getPriceById', function (req, res) {
                              aPrice.stock_name = price[0].stock_name;
                              aPrice.stock_price = price[0].stock_price;
                              pricesArray.push(aPrice);
-	                           //
-                    			 	 if (counter == results.length - 1) {
-                    				       res.json(pricesArray);
-                      			 }
-                    				 else {
-                    				 	     counter++;
-                    				 }
                          }
                      })
+                     //
+                     if (counter == results.length - 1) {
+                       res.json(pricesArray);
+                     }
+                     else {
+                       counter++;
+                     }
                  }
              }//All-sql done
          }
