@@ -105,9 +105,7 @@ app.post('/gettimely', function (req, res) {
 app.post('/getStockCategoryAll', function (req, res) {
     //1. 특정(마지막) 업종 등락 테이블 호출
     //해당날짜 테이블 선택
-    console.log("\n>> getStockCategoryAll() called");
-    console.log(req.query);
-    console.log(req.decoded);
+    console.log("\n>> API_getStockCategoryAll() Called...");
     const mTarget_table = new String("fr_category");
     var sql_find_table = 'SHOW TABLES;';
     connection.query(sql_find_table, function (error, results) {
@@ -200,7 +198,7 @@ app.post('/getStockCategoryAll', function (req, res) {
 //3-2. 업종당 주식 종목 등락률 반환
 app.post('/getStockListById', function (req, res) {
     var category_code = req.body.category_id;
-    console.log("\n>> getStockListById called...");
+    console.log("\n>> API_getStockListById() Called...");
     console.log(" >> category :" + category_code);
     const mTarget_table = new String("tb_summary");
     var sql_find_table = 'SHOW TABLES;';
@@ -267,7 +265,7 @@ app.post('/getStockListById', function (req, res) {
 //3-3. 한 종목 데이터 전송
 app.post('/getStockDataById', function (req, res) {
     var stock_code = req.body.stock_id;
-    console.log(">> getStockDataById called...");
+    console.log("\n>> API_ getStockDateById() called...");
     console.log(" >> category :" + stock_code);
     const mTarget_table = new String("tb_summary");
     var sql_find_table = 'SHOW TABLES;';
@@ -311,12 +309,9 @@ app.post('/getStockDataById', function (req, res) {
 //3.4. 5일치 가격 데이터 전송
 app.post('/getPriceById', function (req, res) {
     var stock_code = req.body.stock_code;
+    console.log("\n>> API_getPriceById() Called...");
     const target_table = new String("tb_price");
     var sql_search_table = "SHOW TABLES;";
-<<<<<<< HEAD
-=======
-
->>>>>>> 078b0ce31f0c761014d869c07752db7620449873
     connection.query(sql_search_table, function (error, results) {
         if (error) {
             console.log(" >> (mysql_failed) no result of query was found...");
@@ -325,11 +320,8 @@ app.post('/getPriceById', function (req, res) {
         else {
             //has-the-name
              let pricesArray = [];
-<<<<<<< HEAD
-	           var counter = 0;
-=======
-             var counter = 0;
->>>>>>> 078b0ce31f0c761014d869c07752db7620449873
+		var counter = 0;
+		var max_table = 5;
              for (i = results.length - 1; i > 0; --i) {
                  var mt = results[i].Tables_in_kisemble;
                  if (mt.indexOf(target_table) != -1) {
@@ -340,30 +332,27 @@ app.post('/getPriceById', function (req, res) {
                           FROM results[i] as A
                           WHERE A.stock_code = ?
                      */
-		     //console.log(current_table);
                      var sql_find_price = 'SELECT A.`stock_name`, A.`stock_price` FROM ' + current_table + ' as A WHERE A.`stock_code` = ?;';
                      connection.query(sql_find_price ,[stock_code], function (error, price) {
                          if (error) {
                              console.log(" >> (mysql_failed) no result of query was found...");
-                             return res.json(10011);
+                             res.json(10011);
                          }
                          else {
-			                       console.log(price);
                              let aPrice = {};
                              aPrice.stock_name = price[0].stock_name;
                              aPrice.stock_price = price[0].stock_price;
                              pricesArray.push(aPrice);
+				if (counter == max_table - 1) {
+					console.log("   >> Get the price; success !!!");
+					res.json(pricesArray);
+				} else {
+					counter++;
+				}
                          }
                      })
-                     //
-                     if (counter == results.length - 1) {
-                       res.json(pricesArray);
-                     }
-                     else {
-                       counter++;
-                     }
                  }
-             }//All-sql done
+             }
          }
      })
 });

@@ -6,18 +6,23 @@ var driver = new webdriver.Builder()
     .forBrowser('chrome')
     .build();
 
-driver.get('http://www.google.com/ncr');
-driver.findElement(By.name('q')).sendKeys('wiki');
-driver.findElement(By.name('btnG')).click();
-driver.wait(check_title, 1000);
+//options
+var chromeCapabilities = webdriver.Capabilities.chrome();
+var chromeOptions = {
+    'args': ['--test-type', '--start-maximized'],
+    'prefs': {"download.default_directory":"/home/uki408/Downloads/Chrome_test/"}
+};
+chromeCapabilities.set('chromeOptions', chromeOptions);
+//set-worker
+const worker = new webdriver.Builder()
+  .forBrowser('chrome')
+  .withCapabilities(chromeCapabilities)
+  .build();
+//ready-worker
+const stock_url = 'http://marketdata.krx.co.kr/mdi#document=040402';
+worker.get(stock_url);
+//event
 
-function check_title() {
-  return driver.getTitle().then(function (title) {
-    if (title === 'wiki - Google Search') {
-      console.log('success');
-      return true;
-    } else {
-      console.log('fail -- ' + title);
-    }
-  });
-}
+worker.sleep(2000).then(function() {
+    driver.sleep(300);
+})
