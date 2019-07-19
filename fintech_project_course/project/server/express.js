@@ -310,6 +310,7 @@ app.post('/getStockDataById', function (req, res) {
 })
 //3.4. 5일치 가격 데이터 전송
 app.post('/getPriceById', function (req, res) {
+    var stock_code = req.body.stock_code;
     const target_table = new String("tb_price");
     var sql_search_table = "SHOW TABLES;";
     connection.query(sql_search_table, function (error, results) {
@@ -318,29 +319,39 @@ app.post('/getPriceById', function (req, res) {
             return res.json(10011);
         }
         else {
-            var pricesArray = [];
+            let pricesArray = [];
             //has-the-name
+	    var counter = 0; 
              for (i = results.length - 1; i > 0; --i) {
                  var mt = results[i].Tables_in_kisemble;
-                 if (mt.indexOf(mTarget_table) != -1) {
-                     current_table = mt;
+                 if (mt.indexOf(target_table) != -1) {
+                     let current_table = mt;
                      console.log(" >> found the dated table found : " + current_table);
                      /*
                        *  SELECT stock_name, stock_price
                           FROM results[i] as A
                           WHERE A.stock_code = ?
                      */
-                     var sql_find_price = 'SELECT A.`stock_name`, A.`stock_price` FROM ' + results[i] + ' as A WHERE A.`stock_code` = ?;';
-                     connection.query(sql_search_table, function (error, price) {
+		     //console.log(current_table);
+                     var sql_find_price = 'SELECT A.`stock_name`, A.`stock_price` FROM ' + current_table + ' as A WHERE A.`stock_code` = ?;';
+                     connection.query(sql_find_price ,[stock_code], function (error, price) {
                          if (error) {
                              console.log(" >> (mysql_failed) no result of query was found...");
                              return res.json(10011);
                          }
                          else {
-                             var aPrice = {};
+			     console.log(price);
+                             let aPrice = {};
                              aPrice.stock_name = price[0].stock_name;
                              aPrice.stock_code = price[0].stock_price;
                              pricesArray.push(aPrice);
+			     //
+				if (counter == results.length - 1) {
+					res.json(pricesArray);
+				}
+				else {
+					counter++;
+				}
                          }
                      })
                  }
