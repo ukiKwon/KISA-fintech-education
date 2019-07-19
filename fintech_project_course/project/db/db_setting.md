@@ -1,4 +1,4 @@
-#update : 2019. 07. 18
+#update : 2019. 07. 19
 #DB configuration  
   - aws 세팅
   - database : kisemble
@@ -17,11 +17,11 @@
 3. 과거 데이터는 미리 계산해두고 테이블(통계 데이터)에 별도로 저장해둘 것.
 
 #기능
-//데이터 주기 10분
+//데이터 주기 20분
 (1) 종목에 따른 관련 정보 업로드
 (2) 업종에 따른 관련 종목 업로드(https://finance.naver.com/sise/sise_group_detail.nhn?type=upjong&no=136)
 
-#Table 세팅
+#테이블정의
 @1. 등락률 요약 테이블
 (1) 등락률만 보여주는 단축 테이블 - 샘플 날짜별
 {종목코드 : 종목순위 : 등락률}
@@ -215,107 +215,144 @@ CREATE TABLE tb_fr_category_20190715 (
   );
   ```
 #샘플 데이터 삽입(0709 ~ 0715)
-1. 종목 리스트
+@1. 종목 리스트
 {종목코드 : 종목명}
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/stock_list.csv'
-INTO TABLE tb_stock_list
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '~/stock_data/stock_list.csv'   
+INTO TABLE tb_stock_list   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```   
 
-2. 종목별 등락률 리스트
+@2. 종목별 등락률 리스트
 {종목코드 : 종목순위 : 등락률}
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/20190709_00095.csv'
-INTO TABLE tb_summary_20190709_00095
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '~/stock_data/20190709_00095.csv'   
+INTO TABLE tb_summary_20190709_00095   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/20190710_00096.csv'
-INTO TABLE tb_summary_20190710_00096
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '~/stock_data/20190710_00096.csv'   
+INTO TABLE tb_summary_20190710_00096   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/20190711_00097.csv'
-INTO TABLE tb_summary_20190711_00097
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '~/stock_data/20190711_00097.csv'   
+INTO TABLE tb_summary_20190711_00097   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/20190712_00098.csv'
-INTO TABLE tb_summary_20190712_00098
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '~/stock_data/20190712_00098.csv'   
+INTO TABLE tb_summary_20190712_00098   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/20190715_00099.csv'
-INTO TABLE tb_summary_20190715_00099
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES;
+LOAD DATA LOCAL INFILE '~/stock_data/20190715_00099.csv'   
+INTO TABLE tb_summary_20190715_00099   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```
-3. 업종 리스트
+@3. 업종 리스트
 {업종코드 : 업종명}
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/category/category_list.csv'
-INTO TABLE tb_category_list
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/category/category_list.csv'   
+INTO TABLE tb_category_list   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
 ```
-4. 업종별 종목
+@4. 업종별 종목
 {업종코드 : 종목코드}
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/category/stock_by_category_on_code.csv'
-INTO TABLE tb_stock_category
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/category/stock_by_category_on_code.csv'   
+INTO TABLE tb_stock_category   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
 ```
-5. 업종별 등락률
+@5. 업종별 등락률
 {업종코드 : 등락률}
 ```
-LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190709.csv'
-INTO TABLE tb_fr_category_20190709
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190709.csv'   
+INTO TABLE tb_fr_category_20190709   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
 
-LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190710.csv'
-INTO TABLE tb_fr_category_20190710
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190710.csv'   
+INTO TABLE tb_fr_category_20190710   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
 
-LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190711.csv'
-INTO TABLE tb_fr_category_20190711
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190711.csv'   
+INTO TABLE tb_fr_category_20190711   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
 
-LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190712.csv'
-INTO TABLE tb_fr_category_20190712
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190712.csv'   
+INTO TABLE tb_fr_category_20190712   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
 
-LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190715.csv'
-INTO TABLE tb_fr_category_20190715
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '~/stock_data/fr_category/fall_rate_by_category_20190715.csv'   
+INTO TABLE tb_fr_category_20190715   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n';   
+```
+@6.종목별 시가 삽입
+```
+LOAD DATA LOCAL INFILE '~/stock_data/date_price/price_20190709.csv'   
+INTO TABLE tb_price_20190709   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
+
+LOAD DATA LOCAL INFILE '~/stock_data/date_price/price_20190710.csv'   
+INTO TABLE tb_price_20190710   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
+
+LOAD DATA LOCAL INFILE '~/stock_data/date_price/price_20190711.csv'   
+INTO TABLE tb_price_20190711   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
+
+LOAD DATA LOCAL INFILE '~/stock_data/date_price/price_20190712.csv'   
+INTO TABLE tb_price_20190712   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
+
+LOAD DATA LOCAL INFILE '~/stock_data/date_price/price_20190715.csv'   
+INTO TABLE tb_price_20190715   
+FIELDS TERMINATED BY ','   
+ENCLOSED BY '"'   
+LINES TERMINATED BY '\n'   
+IGNORE 1 LINES;   
 ```
