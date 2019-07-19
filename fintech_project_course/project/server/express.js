@@ -356,7 +356,6 @@ app.post('/getPriceById', function (req, res) {
                      })
                  }
              }//All-sql done
-             res.json(pricesArray);
          }
      })
 });
