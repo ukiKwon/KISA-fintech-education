@@ -264,7 +264,7 @@ app.post('/getStockListById', function (req, res) {
     })
 
 })
-//3-3. 한 종목 5일치 데이터 전송
+//3-3. 한 종목 데이터 전송
 app.post('/getStockDataById', function (req, res) {
     var stock_code = req.body.stock_id;
     console.log(">> getStockDataById called...");
@@ -308,7 +308,47 @@ app.post('/getStockDataById', function (req, res) {
         }
     })
 })
-//3.$. 서버처리-대기
+//3.4. 5일치 가격 데이터 전송
+app.post('/getPriceById', function (req, res) {
+    const target_table = new String("tb_price");
+    var sql_search_table = "SHOW TABLES;";
+    connection.query(sql_search_table, function (error, results) {
+        if (error) {
+            console.log(" >> (mysql_failed) no result of query was found...");
+            return res.json(10011);
+        }
+        else {
+            var pricesArray = [];
+            //has-the-name
+             for (i = results.length - 1; i > 0; --i) {
+                 var mt = results[i].Tables_in_kisemble;
+                 if (mt.indexOf(mTarget_table) != -1) {
+                     current_table = mt;
+                     console.log(" >> found the dated table found : " + current_table);
+                     /*
+                       *  SELECT stock_name, stock_price
+                          FROM results[i] as A
+                          WHERE A.stock_code = ?
+                     */
+                     var sql_find_price = 'SELECT A.`stock_name`, A.`stock_price` FROM ' + results[i] + ' as A WHERE A.`stock_code` = ?;';
+                     connection.query(sql_search_table, function (error, price) {
+                         if (error) {
+                             console.log(" >> (mysql_failed) no result of query was found...");
+                             return res.json(10011);
+                         }
+                         else {
+                             var aPrice = {};
+                             aPrice.stock_name = price[0].stock_name;
+                             aPrice.stock_code = price[0].stock_price;
+                             pricesArray.push(aPrice);
+                         }
+                     })
+                 }
+             }//All-sql done
+             res.json(pricesArray);
+         }
+     })
+});
 /*
   * function
 */
