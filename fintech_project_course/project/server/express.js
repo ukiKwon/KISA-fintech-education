@@ -313,7 +313,6 @@ app.post('/getPriceById', function (req, res) {
     var stock_code = req.body.stock_code;
     const target_table = new String("tb_price");
     var sql_search_table = "SHOW TABLES;";
-	           var counter = 0;
     connection.query(sql_search_table, function (error, results) {
         if (error) {
             console.log(" >> (mysql_failed) no result of query was found...");
@@ -322,6 +321,7 @@ app.post('/getPriceById', function (req, res) {
         else {
             //has-the-name
              let pricesArray = [];
+	           var counter = 0;
              for (i = results.length - 1; i > 0; --i) {
                  var mt = results[i].Tables_in_kisemble;
                  if (mt.indexOf(target_table) != -1) {
