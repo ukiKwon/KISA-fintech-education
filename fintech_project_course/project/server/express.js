@@ -319,9 +319,9 @@ app.post('/getPriceById', function (req, res) {
             return res.json(10011);
         }
         else {
-            let pricesArray = [];
             //has-the-name
-	    var counter = 0; 
+             let pricesArray = [];
+	           var counter = 0;
              for (i = results.length - 1; i > 0; --i) {
                  var mt = results[i].Tables_in_kisemble;
                  if (mt.indexOf(target_table) != -1) {
@@ -340,18 +340,18 @@ app.post('/getPriceById', function (req, res) {
                              return res.json(10011);
                          }
                          else {
-			     console.log(price);
+			                       console.log(price);
                              let aPrice = {};
                              aPrice.stock_name = price[0].stock_name;
-                             aPrice.stock_code = price[0].stock_price;
+                             aPrice.stock_price = price[0].stock_price;
                              pricesArray.push(aPrice);
-			     //
-				if (counter == results.length - 1) {
-					res.json(pricesArray);
-				}
-				else {
-					counter++;
-				}
+	                           //
+                    			 	 if (counter == results.length - 1) {
+                    				       res.json(pricesArray);
+                      			 }
+                    				 else {
+                    				 	     counter++;
+                    				 }
                          }
                      })
                  }
